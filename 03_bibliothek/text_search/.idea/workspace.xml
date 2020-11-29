@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="016f4cab-f591-4943-8243-5c1e14431634" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/implementation$BoyerMooreHorspool.ic" NAME="BoyerMooreHorspool Coverage Results" MODIFIED="1558094044330" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/implementation$KnuthMorrisPratt.ic" NAME="KnuthMorrisPratt Coverage Results" MODIFIED="1558094095990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="271" />
+  </component>
+  <component name="ProjectId" id="1T1IpriyD8icKKpaJsnWdcSOBU1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558095056605" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../builder" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
+  </component>
+  <component name="RunManager" selected="Application.KnuthMorrisPratt">
+    <configuration name="BoyerMoore" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="BoyerMoore" />
+      <module name="implementation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BoyerMooreHorspool" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="BoyerMooreHorspool" />
+      <module name="implementation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BruteForce" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="BruteForce" />
+      <module name="implementation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="KnuthMorrisPratt" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="KnuthMorrisPratt" />
+      <module name="implementation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RabinKarp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="RabinKarp" />
+      <module name="implementation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.KnuthMorrisPratt" />
+        <item itemvalue="Application.BruteForce" />
+        <item itemvalue="Application.BoyerMoore" />
+        <item itemvalue="Application.BoyerMooreHorspool" />
+        <item itemvalue="Application.RabinKarp" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="016f4cab-f591-4943-8243-5c1e14431634" name="Default Changelist" comment="" />
+      <created>1540712529598</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1540712529598</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1604223714366">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1604223714366" />
+    <state width="1877" height="567" key="GridCell.Tab.0.bottom" timestamp="1604223718793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="567" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1604223718793" />
+    <state width="1877" height="567" key="GridCell.Tab.0.center" timestamp="1604223718793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="567" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1604223718793" />
+    <state width="1877" height="567" key="GridCell.Tab.0.left" timestamp="1604223718793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="567" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1604223718793" />
+    <state width="1877" height="567" key="GridCell.Tab.0.right" timestamp="1604223718793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="567" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1604223718793" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1604223192324">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1604223192324" />
+  </component>
+</project>
