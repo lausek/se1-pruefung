@@ -1,0 +1,7 @@
+package de.dhbw.station.result;
+
+public class KnifeFound extends ScanResult {
+
+	public KnifeFound() {
+	}
+}
