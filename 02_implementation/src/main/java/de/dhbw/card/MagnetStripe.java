@@ -8,4 +8,8 @@ public class MagnetStripe {
 
 	public MagnetStripe() {
 	}
+
+	public void setProfileType(ProfileType profileType) {
+		this.profileType = profileType;
+	}
 }

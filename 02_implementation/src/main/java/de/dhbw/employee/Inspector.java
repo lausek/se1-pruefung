@@ -1,9 +1,9 @@
 package de.dhbw.employee;
 
-import de.dhbw.RollerConveyor;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.station.ManualPostControl;
 import de.dhbw.station.OperatingStation;
+import de.dhbw.station.RollerConveyor;
 import de.dhbw.station.Tray;
 
 public class Inspector extends Employee {

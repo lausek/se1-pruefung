@@ -5,11 +5,15 @@ import de.dhbw.station.Tray;
 
 public class HandBaggage {
 
-	private Layer[] layer;
+	private Layer[] layers;
 	private Passenger passenger;
 	private Tray tray;
 
 	public HandBaggage() {
-		this.layer = new Layer[5];
+		this.layers = new Layer[5];
+	}
+
+	public Layer[] getLayers() {
+		return this.layers;
 	}
 }

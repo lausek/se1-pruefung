@@ -13,4 +13,24 @@ public abstract class Employee {
 
 	public Employee() {
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public IDCard getIDCard() {
+		return iDCard;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public LocalDateTime getBirthDate() {
+		return birthDate;
+	}
 }

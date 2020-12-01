@@ -1,3 +1,5 @@
+package de.dhbw.builder;
+
 public class Pizza {
     private int size;
     private boolean cheese;

@@ -20,6 +20,23 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>aes</name>
+			<type>2</type>
+			<location>C:/Users/WN00086506/dev/se1-pruefung/03_bibliothek/aes</location>
+		</link>
+		<link>
+			<name>builder</name>
+			<type>2</type>
+			<location>C:/Users/WN00086506/dev/se1-pruefung/03_bibliothek/builder</location>
+		</link>
+		<link>
+			<name>text_search</name>
+			<type>2</type>
+			<location>C:/Users/WN00086506/dev/se1-pruefung/03_bibliothek/text_search</location>
+		</link>
+	</linkedResources>
 	<filteredResources>
 		<filter>
 			<id>1606731971501</id>

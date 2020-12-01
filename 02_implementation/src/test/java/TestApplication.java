@@ -2,19 +2,37 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import de.dhbw.Application;
+import de.dhbw.Passenger;
+import de.dhbw.baggage.HandBaggage;
+import de.dhbw.card.IDCard;
+import de.dhbw.card.ProfileType;
+import de.dhbw.station.BaggageScanner;
+import de.dhbw.station.Belt;
+import de.dhbw.station.CardReader;
+import de.dhbw.station.Status;
+
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestApplication {
+	Application application;
+	BaggageScanner baggageScanner;
+	HandBaggage handBaggage;
+
     @BeforeEach
     public void setup() {
-        //Application application = new Application();
-        //application.init();
+        application = new Application();
+        application.init();
+        
+        this.baggageScanner = application.getBaggageScanner();
+        this.handBaggage = null;
     }
 
     @Order(1)
@@ -44,7 +62,7 @@ public class TestApplication {
     public void scannerEmployees() {
         // AssertEquals für alle Mitarbeiter (nicht kompliziertes)
         BaggageScanner baggageScanner = application.getBaggageScanner();
-        assertEquals(baggageScanner.getRollerConveyer().getInspector().getName(), "Clint Eastwood");
+        assertEquals(baggageScanner.getRollerConveyor().getInspector().getName(), "Clint Eastwood");
         assertEquals(baggageScanner.getOperatingStation().getInspector().getName(), "Natalie Portman");
         assertEquals(baggageScanner.getManualPostControl().getInspector().getName(), "Bruce Willis");
         assertEquals(baggageScanner.getSupervision().getSupervisor().getName(), "Jodie Foster");
@@ -59,7 +77,8 @@ public class TestApplication {
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
         IDCard idCard = baggageScanner.getFederalPoliceOfficer().getIDCard();
-        String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
+        //String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
+        String feedback = cardReader.swipeCard(idCard);
         assertTrue(idCard.isLocked());
     }
 
@@ -69,10 +88,11 @@ public class TestApplication {
     public void scannerAccess() {
         // AssertTrue oder False, keine TestFactory
         IDCard idCard = new IDCard();
-        idCard.getMagnetStripe().setProfileType("K");
+        idCard.getMagnetStripe().setProfileType(ProfileType.K);
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
-        String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
+        //String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
+        String feedback = cardReader.swipeCard(idCard);
         assertEquals("Error - Not authorized", feedback);
     }
 
@@ -86,9 +106,9 @@ public class TestApplication {
 
         boolean random = new Random().nextBoolean();
         if (random) {
-            idCard.getMagnetStripe().setProfileType("O");
+            idCard.getMagnetStripe().setProfileType(ProfileType.O);
         } else {
-            idCard.getMagnetStripe().setProfileType("K");
+            idCard.getMagnetStripe().setProfileType(ProfileType.K);
         }
         String feedback1 = baggageScanner.alarm(idCard);
         assertEquals("Error - Not authorized", feedback1);
@@ -103,7 +123,7 @@ public class TestApplication {
         String feedback6 = baggageScanner.moveBeltBackwards(idCard);
         assertEquals("Error - Not authorized", feedback6);
 
-        idCard.getMagnetStripe().setProfileType("I");
+        idCard.getMagnetStripe().setProfileType(ProfileType.I);
         String feedback1 = baggageScanner.alarm(idCard);
         assertEquals("Success", feedback1);
         String feedback2 = baggageScanner.report(idCard);
@@ -117,7 +137,7 @@ public class TestApplication {
         String feedback6 = baggageScanner.moveBeltBackwards(idCard);
         assertEquals("Success", feedback6);
 
-        idCard.getMagnetStripe().setProfileType("S");
+        idCard.getMagnetStripe().setProfileType(ProfileType.S);
         String feedback1 = baggageScanner.alarm(idCard);
         assertEquals("Error - Not authorized", feedback1);
         String feedback2 = baggageScanner.report(idCard);
@@ -131,7 +151,7 @@ public class TestApplication {
         String feedback6 = baggageScanner.moveBeltBackwards(idCard);
         assertEquals("Error - Not authorized", feedback6);
 
-        idCard.getMagnetStripe().setProfileType("T");
+        idCard.getMagnetStripe().setProfileType(ProfileType.T);
         String feedback1 = baggageScanner.alarm(idCard);
         assertEquals("Error - Not authorized", feedback1);
         String feedback2 = baggageScanner.report(idCard);
@@ -153,10 +173,26 @@ public class TestApplication {
         // AssertEquals auf Rückgabewert
         BaggageScanner baggageScanner = application.getBaggageScanner();
 
+        boolean feedback = baggageScanner.unlock(baggageScanner.getSupervision().getSupervisor());
+        assertTrue(feedback);
+
+        boolean feedback2 = baggageScanner.unlock(baggageScanner.getRollerConveyor().getInspector());
+        assertFalse(feedback2);
+
+        boolean feedback3 = baggageScanner.unlock(baggageScanner.getManualPostControl().getInspector());
+        assertFalse(feedback3);
+
+        boolean feedback4 = baggageScanner.unlock(baggageScanner.getOperatingStation().getInspector());
+        assertFalse(feedback4);
+
+        boolean feedback5 = baggageScanner.unlock(baggageScanner.getFederalPoliceOfficer());
+        assertFalse(feedback5);
+
+        /*
         String feedback = baggageScanner.unlock(baggageScanner.getSupervision().getSupervisor());
         assertEquals("Success", feedback);
 
-        String feedback2 = baggageScanner.unlock(baggageScanner.getRollerConveyer().getInspector());
+        String feedback2 = baggageScanner.unlock(baggageScanner.getRollerConveyor().getInspector());
         assertEquals("Error - Not authorized", feedback2);
 
         String feedback3 = baggageScanner.unlock(baggageScanner.getManualPostControl().getInspector());
@@ -167,6 +203,7 @@ public class TestApplication {
 
         String feedback5 = baggageScanner.unlock(baggageScanner.getFederalPoliceOfficer());
         assertEquals("Error - Not authorized", feedback5);
+        */
     }
 
     @Test
@@ -222,6 +259,8 @@ public class TestApplication {
         // Code für Ablauf
         // Durch Inspektor auf Bahn 01 leiten
         assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
+        
+        Belt belt = application.getBaggageScanner().getBelt();
         // Messer entnommen
         assertFalse(handBaggage.getLayer().getContent().contains("kn!fe"));
         // Schale mit Handgepäckstück am Ende des Förderbands abgelegt
@@ -238,16 +277,16 @@ public class TestApplication {
         // Durch Inspektor auf Bahn 01 leiten
         assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
         // Alarm ausgelöst
-        assertTrue(baggageScanner.isAlarm());
+        assertTrue(baggageScanner.isAlarmActive());
         // BaggageScanner Zustand locked
-        assertEquals("LOCKED", baggageScanner.getStatus);
+        assertTrue(baggageScanner.isLocked());
         // Festnahme
         assertTrue(passenger.isArrested());
         // Supervisor entnimmt Waffe und übergibt Bundespolizist
         assertFalse(handBaggage.getLayer().getContent().contains("glock|7"));
         // Betrieb fortsetzen (Alarm aus & Zustand unlocked)
-        assertFalse(baggageScanner.isAlarm());
-        assertEquals("ACTIVE", baggageScanner.getStatus);
+        assertFalse(baggageScanner.isAlarmActive());
+        assertEquals(Status.ACTIVE, baggageScanner.getStatus());
     }
 
     @Test
@@ -258,9 +297,9 @@ public class TestApplication {
         // Durch Inspektor auf Bahn 01 leiten
         assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
         // Alarm ausgelöst
-        assertTrue(baggageScanner.isAlarm());
+        assertTrue(baggageScanner.isAlarmActive());
         // BaggageScanner Zustand locked
-        assertEquals("LOCKED", baggageScanner.getStatus);
+        assertTrue(baggageScanner.isLocked());
         // Inspektor swiped mit Teststreifen über Gepäck und liest in ExplosivesTraceDetector einlesen
         // Code boolean found = explosiveTraceDetector.test();
         assertTrue(found);
@@ -273,7 +312,7 @@ public class TestApplication {
             }
         }
         // Betrieb fortsetzen (Alarm aus & Zustand unlocked)
-        assertFalse(baggageScanner.isAlarm());
-        assertEquals("ACTIVE", baggageScanner.getStatus);
+        assertFalse(baggageScanner.isAlarmActive());
+        assertFalse(baggageScanner.isLocked());
     }
 }

@@ -10,4 +10,16 @@ public class OperatingStation {
 
 	public OperatingStation() {
 	}
+
+	public Inspector getInspector() {
+		return inspector;
+	}
+
+	public void setInspector(Inspector inspector) {
+		this.inspector = inspector;
+	}
+
+	public CardReader getCardReader() {
+		return cardReader;
+	}
 }

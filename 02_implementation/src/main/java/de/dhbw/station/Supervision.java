@@ -9,4 +9,12 @@ public class Supervision {
 
 	public Supervision() {
 	}
+
+	public Supervisor getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(Supervisor supervisor) {
+		this.supervisor = supervisor;
+	}
 }

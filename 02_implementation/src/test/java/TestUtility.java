@@ -1,6 +1,11 @@
+import de.dhbw.baggage.HandBaggage;
+import de.dhbw.station.BaggageScanner;
+import de.dhbw.station.result.Clean;
+import de.dhbw.station.result.ScanResult;
+
 public class TestUtility {
     public boolean scan(String item, BaggageScanner baggageScanner) {
-        Handbaggage handBaggage = new Handbaggage();
+        HandBaggage handBaggage = new HandBaggage();
         switch (item) {
             case "Knife":
                 handBaggage.setContent("kn!fe");
@@ -13,12 +18,7 @@ public class TestUtility {
                 break;
         }
 
-        String feedback = baggageScanner.scan(handbaggage);
-        boolean found = false;
-        if (feedback.equals("Item found")) {
-            found = true;
-        }
-
-        return found;
+        ScanResult feedback = baggageScanner.scan(handBaggage);
+        return !(feedback instanceof Clean);
     }
 }

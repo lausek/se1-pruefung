@@ -16,4 +16,12 @@ public class IDCard {
 	public IDCard() {
 		this.magnetStripe = new MagnetStripe();
 	}
+
+	public boolean isLocked() {
+		return this.isLocked;
+	}
+
+	public MagnetStripe getMagnetStripe() {
+		return this.magnetStripe;
+	}
 }
