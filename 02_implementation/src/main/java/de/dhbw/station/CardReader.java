@@ -4,6 +4,8 @@ import de.dhbw.card.IDCard;
 
 public class CardReader {
 
+	private OperatingStation operatingStation;
+
 	public CardReader() {
 	}
 

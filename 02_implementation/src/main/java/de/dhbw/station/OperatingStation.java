@@ -6,6 +6,7 @@ public class OperatingStation {
 
 	private CardReader cardReader;
 	private Inspector inspector;
+	private BaggageScanner baggageScanner;
 
 	public OperatingStation() {
 	}
