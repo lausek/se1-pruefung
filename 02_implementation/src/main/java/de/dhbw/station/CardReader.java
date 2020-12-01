@@ -1,13 +1,47 @@
 package de.dhbw.station;
 
 import de.dhbw.card.IDCard;
+import de.dhbw.card.ProfileType;
 
 public class CardReader {
 
 	private OperatingStation operatingStation;
 
-	public CardReader() {
+	public CardReader(OperatingStation operatingStation) {
+		this.operatingStation = operatingStation;
 	}
 
-	public void swipeCard(IDCard card) {}
+	public boolean doAuthentication(IDCard card, String[] pins) {
+		if (card.isLocked() || !this.swipeCard(card)) {
+			return false;
+		}
+
+		int tries = 0;
+		for (String pin : pins) {
+			if (3 <= tries) {
+				card.lock();
+				break;
+			}
+
+			if (this.inputPin(card, pin)) {
+				return true;
+			}
+
+			tries += 1;
+		}
+
+		return false;
+	}
+
+	public boolean swipeCard(IDCard card) {
+		ProfileType profileType = card.getMagnetStripe().getProfileType();
+		if (profileType == ProfileType.K || profileType == ProfileType.O) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean inputPin(IDCard card, String pin) {
+		return card.getMagnetStripe().getPin().equals(pin);
+	}
 }

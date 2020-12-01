@@ -13,10 +13,12 @@ import de.dhbw.station.CardReader;
 import de.dhbw.station.Status;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,18 +44,12 @@ public class TestApplication {
             "Mark Fillingham, 3",
             "Steven Darby, 1"
     })
-    public void init(String passenger, String handBaggage) {
-        // Parametrized mit Sollwerten
+    public void init(String passengerName, String handBaggageRaw) {
+        // Parameterized mit Sollwerten
         List<Passenger> passengerList = application.getPassengers();
-        List<Passenger> passengerListFiltered = application.getPassengers();
 
-        if (passenger != null && !passenger.isEmpty()) {
-            passengerListFiltered = passengerList.stream().filter(result -> result.getName().equals(passenger)).collect(Collectors.toList());
-        }
-
-        for (Passenger passenger : passengerListFiltered) {
-            assertEquals(passenger.getHandBaggage(), handBaggage);
-        }
+        Optional<Passenger> passenger = passengerList.stream().filter(result -> result.getName().equals(passengerName)).findFirst();
+        assertTrue(passenger.get().getHandBaggage().contains(handBaggage));
     }
 
     @Test
@@ -77,8 +73,9 @@ public class TestApplication {
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
         IDCard idCard = baggageScanner.getFederalPoliceOfficer().getIDCard();
-        //String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
-        String feedback = cardReader.swipeCard(idCard);
+        assertFalse(idCard.isLocked());
+        String[] tries = new String[] { "0000", "0000", "0000" };
+        assertFalse(cardReader.doAuthentication(idCard, tries));
         assertTrue(idCard.isLocked());
     }
 
@@ -91,9 +88,8 @@ public class TestApplication {
         idCard.getMagnetStripe().setProfileType(ProfileType.K);
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
-        //String feedback = cardReader.swipe(idCard, 0000, 0000, 0000);
-        String feedback = cardReader.swipeCard(idCard);
-        assertEquals("Error - Not authorized", feedback);
+        boolean feedback = cardReader.swipeCard(idCard);
+        assertFalse(feedback);
     }
 
     @Test
@@ -249,7 +245,7 @@ public class TestApplication {
     public void standardNonIllegal() {
         // Code für Ablauf
         // Auf Track02 geleitet
-        assertEquals(handBaggage, application.getBaggageScanner().getTray02().getItem(handBaggage));
+        assertNotNull(application.getBaggageScanner().getTrack2().getItem(handBaggage));
     }
 
     @Test
@@ -258,7 +254,7 @@ public class TestApplication {
     public void standardKnife() {
         // Code für Ablauf
         // Durch Inspektor auf Bahn 01 leiten
-        assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
+        assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
         
         Belt belt = application.getBaggageScanner().getBelt();
         // Messer entnommen
@@ -275,7 +271,7 @@ public class TestApplication {
     public void standardWeapon() {
         // Code für Ablauf
         // Durch Inspektor auf Bahn 01 leiten
-        assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
+        assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
         // Alarm ausgelöst
         assertTrue(baggageScanner.isAlarmActive());
         // BaggageScanner Zustand locked
@@ -295,7 +291,7 @@ public class TestApplication {
     public void standardExplosive() {
         // Code für Ablauf
         // Durch Inspektor auf Bahn 01 leiten
-        assertEquals(handBaggage, application.getBaggageScanner().getTray01().getItem(handBaggage));
+        assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
         // Alarm ausgelöst
         assertTrue(baggageScanner.isAlarmActive());
         // BaggageScanner Zustand locked

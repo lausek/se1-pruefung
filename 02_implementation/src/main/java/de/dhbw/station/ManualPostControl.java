@@ -7,7 +7,8 @@ public class ManualPostControl {
 	private BaggageScanner baggageScanner;
 	private Inspector inspector;
 
-	public ManualPostControl() {
+	public ManualPostControl(BaggageScanner baggageScanner) {
+		this.baggageScanner = baggageScanner;
 	}
 
 	public Inspector getInspector() {

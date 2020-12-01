@@ -4,6 +4,7 @@ public class Scanner {
 
 	private BaggageScanner baggageScanner;
 
-	public Scanner() {
+	public Scanner(BaggageScanner baggageScanner) {
+		this.baggageScanner = baggageScanner;
 	}
 }

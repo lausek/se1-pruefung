@@ -7,7 +7,8 @@ public class Supervision {
 	private BaggageScanner baggageScanner;
 	private Supervisor supervisor;
 
-	public Supervision() {
+	public Supervision(BaggageScanner baggageScanner) {
+		this.baggageScanner = baggageScanner;
 	}
 
 	public Supervisor getSupervisor() {

@@ -4,4 +4,9 @@ public class Clean extends ScanResult {
 
 	public Clean() {
 	}
+
+	@Override
+	public String getResultMessage() {
+		return "clean";
+	}
 }

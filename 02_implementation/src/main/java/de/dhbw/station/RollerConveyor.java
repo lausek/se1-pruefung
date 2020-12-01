@@ -7,7 +7,8 @@ public class RollerConveyor {
 	private Inspector inspector;
 	private BaggageScanner baggageScanner;
 
-	public RollerConveyor() {
+	public RollerConveyor(BaggageScanner baggageScanner) {
+		this.baggageScanner = baggageScanner;
 	}
 
 	public Inspector getInspector() {
