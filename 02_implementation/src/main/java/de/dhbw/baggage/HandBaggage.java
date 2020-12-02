@@ -11,6 +11,9 @@ public class HandBaggage {
 
 	public HandBaggage() {
 		this.layers = new Layer[5];
+		for(int i = 0; i < this.layers.length; i++) {
+			this.layers[i] = new Layer();
+		}
 	}
 
 	public Layer[] getLayers() {

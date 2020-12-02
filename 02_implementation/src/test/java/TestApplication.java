@@ -7,10 +7,15 @@ import de.dhbw.Passenger;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.card.IDCard;
 import de.dhbw.card.ProfileType;
+import de.dhbw.employee.Inspector;
+import de.dhbw.employee.Supervisor;
+import de.dhbw.employee.Technician;
+import de.dhbw.police.FederalPoliceOfficer;
 import de.dhbw.station.BaggageScanner;
 import de.dhbw.station.Belt;
 import de.dhbw.station.CardReader;
 import de.dhbw.station.Status;
+import de.dhbw.station.UnauthorizedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +24,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -97,69 +104,39 @@ public class TestApplication {
     @DisplayName("Ein Mitarbeiter kann nur die - gemäß Profil - zugeordneten Funktionalitäten ausführen.")
     public void employeeFunctionalities() {
         // Kombinierter Test mit AssertEquals
-        IDCard idCard = new IDCard();
         BaggageScanner baggageScanner = application.getBaggageScanner();
 
-        boolean random = new Random().nextBoolean();
-        if (random) {
-            idCard.getMagnetStripe().setProfileType(ProfileType.O);
-        } else {
-            idCard.getMagnetStripe().setProfileType(ProfileType.K);
-        }
-        String feedback1 = baggageScanner.alarm(idCard);
-        assertEquals("Error - Not authorized", feedback1);
-        String feedback2 = baggageScanner.report(idCard);
-        assertEquals("Error - Not authorized", feedback2);
-        String feedback3 = baggageScanner.maintenance(idCard);
-        assertEquals("Error - Not authorized", feedback3);
-        String feedback4 = baggageScanner.scan(idCard);
-        assertEquals("Error - Not authorized", feedback4);
-        String feedback5 = baggageScanner.moveBeltForwards(idCard);
-        assertEquals("Error - Not authorized", feedback5);
-        String feedback6 = baggageScanner.moveBeltBackwards(idCard);
-        assertEquals("Error - Not authorized", feedback6);
+        FederalPoliceOfficer officer = new FederalPoliceOfficer();
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.scan(officer, null));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(officer));
 
-        idCard.getMagnetStripe().setProfileType(ProfileType.I);
-        String feedback1 = baggageScanner.alarm(idCard);
-        assertEquals("Success", feedback1);
-        String feedback2 = baggageScanner.report(idCard);
-        assertEquals("Error - Not authorized", feedback2);
-        String feedback3 = baggageScanner.maintenance(idCard);
-        assertEquals("Error - Not authorized", feedback3);
-        String feedback4 = baggageScanner.scan(idCard);
-        assertEquals("Success", feedback4);
-        String feedback5 = baggageScanner.moveBeltForwards(idCard);
-        assertEquals("Success", feedback5);
-        String feedback6 = baggageScanner.moveBeltBackwards(idCard);
-        assertEquals("Success", feedback6);
+        Inspector inspector = new Inspector();
+        assertDoesNotThrow(() -> baggageScanner.alarm(inspector));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(inspector));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(inspector));
+        assertDoesNotThrow(() -> baggageScanner.scan(inspector, null));
+        assertDoesNotThrow(() -> baggageScanner.moveBeltForward(inspector));
+        assertDoesNotThrow(() -> baggageScanner.moveBeltBackwards(inspector));
 
-        idCard.getMagnetStripe().setProfileType(ProfileType.S);
-        String feedback1 = baggageScanner.alarm(idCard);
-        assertEquals("Error - Not authorized", feedback1);
-        String feedback2 = baggageScanner.report(idCard);
-        assertEquals("Success", feedback2);
-        String feedback3 = baggageScanner.maintenance(idCard);
-        assertEquals("Error - Not authorized", feedback3);
-        String feedback4 = baggageScanner.scan(idCard);
-        assertEquals("Error - Not authorized", feedback4);
-        String feedback5 = baggageScanner.moveBeltForwards(idCard);
-        assertEquals("Error - Not authorized", feedback5);
-        String feedback6 = baggageScanner.moveBeltBackwards(idCard);
-        assertEquals("Error - Not authorized", feedback6);
+        Supervisor supervisor = new Supervisor();
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(supervisor));
+        assertDoesNotThrow(() -> baggageScanner.report(supervisor));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(supervisor));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.scan(supervisor, null));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(supervisor));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(supervisor));
 
-        idCard.getMagnetStripe().setProfileType(ProfileType.T);
-        String feedback1 = baggageScanner.alarm(idCard);
-        assertEquals("Error - Not authorized", feedback1);
-        String feedback2 = baggageScanner.report(idCard);
-        assertEquals("Error - Not authorized", feedback2);
-        String feedback3 = baggageScanner.maintenance(idCard);
-        assertEquals("Success", feedback3);
-        String feedback4 = baggageScanner.scan(idCard);
-        assertEquals("Error - Not authorized", feedback4);
-        String feedback5 = baggageScanner.moveBeltForwards(idCard);
-        assertEquals("Error - Not authorized", feedback5);
-        String feedback6 = baggageScanner.moveBeltBackwards(idCard);
-        assertEquals("Error - Not authorized", feedback6);
+        Technician technician = new Technician();
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(technician));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(technician));
+        assertDoesNotThrow(() -> baggageScanner.maintenance(technician));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.scan(technician, null));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(technician));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(technician));
     }
 
     @Test
@@ -169,37 +146,15 @@ public class TestApplication {
         // AssertEquals auf Rückgabewert
         BaggageScanner baggageScanner = application.getBaggageScanner();
 
-        boolean feedback = baggageScanner.unlock(baggageScanner.getSupervision().getSupervisor());
-        assertTrue(feedback);
+        assertDoesNotThrow(() -> baggageScanner.unlock(baggageScanner.getSupervision().getSupervisor()));
 
-        boolean feedback2 = baggageScanner.unlock(baggageScanner.getRollerConveyor().getInspector());
-        assertFalse(feedback2);
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.unlock(baggageScanner.getRollerConveyor().getInspector()));
 
-        boolean feedback3 = baggageScanner.unlock(baggageScanner.getManualPostControl().getInspector());
-        assertFalse(feedback3);
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.unlock(baggageScanner.getManualPostControl().getInspector()));
 
-        boolean feedback4 = baggageScanner.unlock(baggageScanner.getOperatingStation().getInspector());
-        assertFalse(feedback4);
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.unlock(baggageScanner.getOperatingStation().getInspector()));
 
-        boolean feedback5 = baggageScanner.unlock(baggageScanner.getFederalPoliceOfficer());
-        assertFalse(feedback5);
-
-        /*
-        String feedback = baggageScanner.unlock(baggageScanner.getSupervision().getSupervisor());
-        assertEquals("Success", feedback);
-
-        String feedback2 = baggageScanner.unlock(baggageScanner.getRollerConveyor().getInspector());
-        assertEquals("Error - Not authorized", feedback2);
-
-        String feedback3 = baggageScanner.unlock(baggageScanner.getManualPostControl().getInspector());
-        assertEquals("Error - Not authorized", feedback3);
-
-        String feedback4 = baggageScanner.unlock(baggageScanner.getOperatingStation().getInspector());
-        assertEquals("Error - Not authorized", feedback4);
-
-        String feedback5 = baggageScanner.unlock(baggageScanner.getFederalPoliceOfficer());
-        assertEquals("Error - Not authorized", feedback5);
-        */
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.unlock(baggageScanner.getFederalPoliceOfficer()));
     }
 
     @Test

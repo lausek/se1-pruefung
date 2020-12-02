@@ -9,6 +9,7 @@ public class Passenger {
 
 	private List<HandBaggage> handBaggages;
 	private String name;
+	private boolean isArrested = false;
 
 	public Passenger() {
 		this.handBaggages = new ArrayList<>(3);
@@ -20,5 +21,13 @@ public class Passenger {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public void arrest() {
+		this.isArrested = true;
+	}
+
+	public boolean isArrested() {
+		return this.isArrested;
 	}
 }

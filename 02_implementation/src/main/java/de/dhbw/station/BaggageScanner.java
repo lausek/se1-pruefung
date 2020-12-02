@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Stack;
 
 import de.dhbw.baggage.HandBaggage;
-import de.dhbw.card.IDCard;
 import de.dhbw.employee.Employee;
+import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
 import de.dhbw.police.FederalPoliceOfficer;
 import de.dhbw.station.result.Clean;
@@ -56,11 +56,11 @@ public class BaggageScanner {
 		return this.trays.pop();
 	}
 
-	public void moveBeltForward() {}
+	public void moveBeltForward(Employee employee) throws UnauthorizedException {}
 
-	public void moveBeltBackwards() {}
+	public void moveBeltBackwards(Employee employee) throws UnauthorizedException {}
 
-	public ScanResult scan(HandBaggage baggage) {
+	public ScanResult scan(Employee employee, HandBaggage baggage) throws UnauthorizedException {
 		assert(this.status == Status.ACTIVE);
 		this.status = Status.IN_USE;
 
@@ -74,28 +74,28 @@ public class BaggageScanner {
 		return scanResult;
 	}
 
-	public void alarm() {
+	public void alarm(Employee employee) throws UnauthorizedException {
 		this.alarmActive = true;
 		this.status = Status.LOCKED;
 	}
 
-	public void report() {}
+	public void report(Employee employee) throws UnauthorizedException {}
 
-	public void maintenance() {}
+	public void maintenance(Employee employee) throws UnauthorizedException {}
 
-	public void start() {
+	public void start(Employee employee) throws UnauthorizedException {
 	}
 
-	public void shutdown() {
+	public void shutdown(Employee employee) throws UnauthorizedException {
 		this.alarmActive = false;
 		this.status = Status.SHUTDOWN;
 	}
 	
-	public boolean unlock(Employee employee) {
+	public void unlock(Employee employee) throws UnauthorizedException {
 		if(!(employee instanceof Supervisor)) {
-			return false;
+			throw new UnauthorizedException();
 		}
-		return true;
+		this.status = Status.ACTIVE;
 	}
 
 	public RollerConveyor getRollerConveyor() {

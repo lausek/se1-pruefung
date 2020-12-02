@@ -18,4 +18,8 @@ public class RollerConveyor {
 	public void setInspector(Inspector inspector) {
 		this.inspector = inspector;
 	}
+	
+	public void push(Tray tray) {
+		this.baggageScanner.getBelt().push(tray);
+	}
 }

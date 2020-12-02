@@ -13,12 +13,13 @@ public class IDCard {
 	private LocalDateTime validUntil;
 	private boolean isLocked;
 
-	public IDCard() {
+	public IDCard(Employee employee) {
 		this.magnetStripe = new MagnetStripe();
+		this.employee = employee;
 	}
 
 	public boolean isLocked() {
-		return this.isLocked;
+		return this.isLocked || LocalDateTime.now().isAfter(validUntil);
 	}
 
 	public MagnetStripe getMagnetStripe() {
