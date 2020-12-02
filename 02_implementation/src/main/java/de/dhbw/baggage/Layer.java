@@ -6,5 +6,10 @@ public class Layer {
 	private char[] content;
 
 	public Layer() {
+		this.content = new char[10000];
+	}
+	
+	public String getContent() {
+		return new String(this.content);
 	}
 }

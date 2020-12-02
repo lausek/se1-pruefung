@@ -19,4 +19,12 @@ public class HandBaggage {
 	public Layer[] getLayers() {
 		return this.layers;
 	}
+
+	public Passenger getPassenger() {
+		return this.passenger;
+	}
+
+	public ProhibitedItem removeProhibitedItem() {
+		return null;
+	}
 }

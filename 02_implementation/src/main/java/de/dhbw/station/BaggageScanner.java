@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import de.dhbw.Configuration;
 import de.dhbw.baggage.HandBaggage;
+import de.dhbw.baggage.Layer;
+import de.dhbw.baggage.ProhibitedItem;
 import de.dhbw.employee.Employee;
 import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
 import de.dhbw.police.FederalPoliceOfficer;
+import de.dhbw.search.BoyerMoore;
+import de.dhbw.search.IStringMatching;
+import de.dhbw.search.KnuthMorrisPratt;
 import de.dhbw.station.result.Clean;
 import de.dhbw.station.result.ScanResult;
 
@@ -20,6 +26,7 @@ public class BaggageScanner {
 	private RollerConveyor rollerConveyor;
 	private Belt belt;
 	private Scanner scanner;
+	private ExplosiveTraceDetector explosiveTraceDetector;
 	private OperatingStation operatingStation;
 	private ManualPostControl manualPostControl;
 	private Supervision supervision;
@@ -37,6 +44,7 @@ public class BaggageScanner {
 
 		this.rollerConveyor = new RollerConveyor(this);
 		this.belt = new Belt(this);
+		this.explosiveTraceDetector = new ExplosiveTraceDetector();
 		this.scanner = new Scanner(this);
 		this.operatingStation = new OperatingStation(this);
 		this.manualPostControl = new ManualPostControl(this);
@@ -60,11 +68,23 @@ public class BaggageScanner {
 
 	public void moveBeltBackwards(Employee employee) throws UnauthorizedException {}
 
-	public ScanResult scan(Employee employee, HandBaggage baggage) throws UnauthorizedException {
+	public ScanResult scan(Employee employee, HandBaggage handBaggage) throws UnauthorizedException {
 		assert(this.status == Status.ACTIVE);
 		this.status = Status.IN_USE;
-
+		
 		ScanResult scanResult = new Clean();
+		IStringMatching searcher = Configuration.SEARCH_ALGORITHM == "BoyerMoore" ? new BoyerMoore() : new KnuthMorrisPratt();
+
+		for(Layer layer : handBaggage.getLayers()) {
+			for(ProhibitedItem prohibitedItem : Configuration.PROHIBITED_ITEMS) {
+				int position = searcher.search(layer.getContent(), prohibitedItem.getPattern());
+				if(0 <= position) {
+					 scanResult = prohibitedItem.createResult(position);
+					 break;
+				}
+			}
+		}
+
 		Record record = new Record(scanResult);
 		
 		scanLog.add(record);
@@ -95,6 +115,7 @@ public class BaggageScanner {
 		if(!(employee instanceof Supervisor)) {
 			throw new UnauthorizedException();
 		}
+		this.alarmActive = false;
 		this.status = Status.ACTIVE;
 	}
 
@@ -140,5 +161,9 @@ public class BaggageScanner {
 
 	public Belt getTrack2() {
 		return this.postBelts[1];
+	}
+
+	public ExplosiveTraceDetector getExplosiveTraceDetector() {
+		return explosiveTraceDetector;
 	}
 }

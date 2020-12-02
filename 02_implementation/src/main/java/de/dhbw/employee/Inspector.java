@@ -4,7 +4,6 @@ import de.dhbw.baggage.HandBaggage;
 import de.dhbw.station.ManualPostControl;
 import de.dhbw.station.OperatingStation;
 import de.dhbw.station.RollerConveyor;
-import de.dhbw.station.Tray;
 
 public class Inspector extends Employee {
 
@@ -13,9 +12,11 @@ public class Inspector extends Employee {
 	private OperatingStation operatingStation;
 	private boolean isSenior;
 
-	public Inspector() {
+	public Inspector() { }
+
+	public char[] swipe(HandBaggage handBaggage) {
+		return null;
 	}
 
-	public void push(Tray tray) {}
-	public void swipe(HandBaggage handBaggage) {}
+	public void duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden() { }
 }

@@ -5,5 +5,5 @@ public class ExplosiveTraceDetector {
 	public ExplosiveTraceDetector() {
 	}
 
-	public void test(char sample) {}
+	public void test(char[] sample) {}
 }

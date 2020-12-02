@@ -4,10 +4,17 @@ import de.dhbw.baggage.HandBaggage;
 
 public class Roboter {
 
-	private FederalPoliceOffice federalPoliceOffice;
+	private FederalPoliceOfficer federalPoliceOfficer;
 
-	public Roboter() {
+	public Roboter() { }
+	
+	public void destroy(HandBaggage handBaggage) { }
+
+	public FederalPoliceOfficer getFederalPoliceOfficer() {
+		return this.federalPoliceOfficer;
 	}
 
-	public void destroy(HandBaggage baggage) {}
+	public void setFederalPoliceOfficer(FederalPoliceOfficer officerO2) {
+		this.federalPoliceOfficer = officerO2;
+	}
 }
