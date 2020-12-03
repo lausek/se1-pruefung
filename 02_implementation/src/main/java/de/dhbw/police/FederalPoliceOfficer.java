@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.dhbw.Passenger;
 import de.dhbw.baggage.ProhibitedItem;
+import de.dhbw.card.IDCard;
 import de.dhbw.employee.Employee;
 import de.dhbw.station.BaggageScanner;
 
@@ -15,7 +16,8 @@ public class FederalPoliceOfficer extends Employee {
 	private List<ProhibitedItem> bigStashes;
 	private int grade;
 
-	public FederalPoliceOfficer(FederalPoliceOffice federalPoliceOffice) {
+	public FederalPoliceOfficer(String name, IDCard idCard, FederalPoliceOffice federalPoliceOffice) {
+		super(name, idCard);
 		this.federalPoliceOffice = federalPoliceOffice;
 		this.bigStashes = new ArrayList<>();
 	}
@@ -29,7 +31,7 @@ public class FederalPoliceOfficer extends Employee {
 	}
 
 	public List<FederalPoliceOfficer> callSupport() {
-		return this.federalPoliceOffice.getOfficers().subList(1, 2);
+		return this.federalPoliceOffice.getOfficers().subList(1, 3);
 	}
 
 	public void takeProhibitedItem(ProhibitedItem prohibitedItem) {

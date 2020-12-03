@@ -106,7 +106,7 @@ public class TestApplication {
         // Kombinierter Test mit AssertEquals
         BaggageScanner baggageScanner = application.getBaggageScanner();
 
-        FederalPoliceOfficer officer = new FederalPoliceOfficer();
+        FederalPoliceOfficer officer = new FederalPoliceOfficer(null);
         assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(officer));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.report(officer));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(officer));

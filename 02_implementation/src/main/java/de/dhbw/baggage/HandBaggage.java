@@ -9,7 +9,8 @@ public class HandBaggage {
 	private Passenger passenger;
 	private Tray tray;
 
-	public HandBaggage() {
+	public HandBaggage(Passenger passenger) {
+		this.passenger = passenger;
 		this.layers = new Layer[5];
 		for(int i = 0; i < this.layers.length; i++) {
 			this.layers[i] = new Layer();

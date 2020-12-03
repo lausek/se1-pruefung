@@ -13,9 +13,8 @@ public class IDCard {
 	private LocalDateTime validUntil;
 	private boolean isLocked;
 
-	public IDCard(Employee employee) {
+	public IDCard() {
 		this.magnetStripe = new MagnetStripe();
-		this.employee = employee;
 	}
 
 	public boolean isLocked() {
@@ -32,5 +31,13 @@ public class IDCard {
 
 	public void lock() {
 		this.isLocked = true;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 }

@@ -6,12 +6,14 @@ import de.dhbw.card.IDCard;
 
 public abstract class Employee {
 
-	private IDCard iDCard;
+	private IDCard idCard;
 	protected int id;
 	protected String name;
 	protected LocalDateTime birthDate;
 
-	public Employee() {
+	public Employee(String name, IDCard idCard) {
+		this.name = name;
+		this.idCard = idCard;
 	}
 
 	public String getName() {
@@ -23,7 +25,7 @@ public abstract class Employee {
 	}
 
 	public IDCard getIDCard() {
-		return iDCard;
+		return idCard;
 	}
 
 	public int getId() {

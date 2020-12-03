@@ -1,5 +1,6 @@
 package de.dhbw.employee;
 
+import de.dhbw.card.IDCard;
 import de.dhbw.station.Supervision;
 
 public class Supervisor extends Employee {
@@ -8,6 +9,7 @@ public class Supervisor extends Employee {
 	private boolean isSenior;
 	private boolean isExecutive;
 
-	public Supervisor() {
+	public Supervisor(String name, IDCard idCard) {
+		super(name, idCard);
 	}
 }

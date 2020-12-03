@@ -18,6 +18,10 @@ public class Belt {
 		this.queue.add(tray);
 	}
 
+	public Tray takeNext() {
+		return this.queue.poll();
+	}
+
 	public Tray getBack() {
 		return this.queue.getLast();
 	}
@@ -33,5 +37,9 @@ public class Belt {
 			}
 		}
 		return null;
+	}
+	
+	public int size() {
+		return this.queue.size();
 	}
 }

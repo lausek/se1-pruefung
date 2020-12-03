@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.dhbw.card.IDCard;
+
 public class FederalPoliceOffice {
 	
 	private static Random random = new Random();
@@ -15,9 +17,9 @@ public class FederalPoliceOffice {
 		this.roboter = new Roboter[] { new Roboter(), new Roboter(), new Roboter() };
 		this.federalPoliceOfficers = new ArrayList<>();
 		
-		for(int i = 0; i < 3; i++) {
-			this.federalPoliceOfficers.add(new FederalPoliceOfficer(this));
-		}
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Wesley Snipes", new IDCard(), this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Toto", new IDCard(), this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Harry", new IDCard(), this));
 	}
 	
 	public Roboter getRoboter() {

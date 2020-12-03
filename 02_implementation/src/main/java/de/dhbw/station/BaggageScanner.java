@@ -9,8 +9,10 @@ import de.dhbw.baggage.HandBaggage;
 import de.dhbw.baggage.Layer;
 import de.dhbw.baggage.ProhibitedItem;
 import de.dhbw.employee.Employee;
+import de.dhbw.employee.HouseKeeper;
 import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
+import de.dhbw.employee.Technician;
 import de.dhbw.police.FederalPoliceOfficer;
 import de.dhbw.search.BoyerMoore;
 import de.dhbw.search.IStringMatching;
@@ -36,6 +38,9 @@ public class BaggageScanner {
 	private List<Record> scanLog;
 	private Belt[] postBelts;
 
+	private Technician technician;
+	private HouseKeeper houseKeeper;
+
 	public BaggageScanner() {
 		this.trays = new Stack<>();
 		for(int i = 0; i < DEFAULT_TRAY_AMOUNT; i++) {
@@ -52,7 +57,7 @@ public class BaggageScanner {
 		
 		this.alarmActive = false;
 		this.status = Status.SHUTDOWN;
-		this.scanLog = new ArrayList<>();
+		this.scanLog = new ArrayList<>(1500);
 		this.postBelts = new Belt[] { new Belt(this), new Belt(this) };
 	}
 	
@@ -74,6 +79,10 @@ public class BaggageScanner {
 		
 		ScanResult scanResult = new Clean();
 		IStringMatching searcher = Configuration.SEARCH_ALGORITHM == "BoyerMoore" ? new BoyerMoore() : new KnuthMorrisPratt();
+		
+		if(handBaggage.getPassenger().getName().equals("Philip Bottomley")) {
+			System.out.println();
+		}
 
 		for(Layer layer : handBaggage.getLayers()) {
 			for(ProhibitedItem prohibitedItem : Configuration.PROHIBITED_ITEMS) {
@@ -135,6 +144,10 @@ public class BaggageScanner {
 		return federalPoliceOfficer;
 	}
 
+	public void setFederalPoliceOfficer(FederalPoliceOfficer federalPoliceOfficer) {
+		this.federalPoliceOfficer = federalPoliceOfficer;
+	}
+
 	public ManualPostControl getManualPostControl() {
 		return manualPostControl;
 	}
@@ -165,5 +178,13 @@ public class BaggageScanner {
 
 	public ExplosiveTraceDetector getExplosiveTraceDetector() {
 		return explosiveTraceDetector;
+	}
+
+	public void setTechnician(Technician technician) {
+		this.technician = technician;
+	}
+
+	public void setHouseKeeper(HouseKeeper houseKeeper) {
+		this.houseKeeper = houseKeeper;
 	}
 }

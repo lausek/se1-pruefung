@@ -26,10 +26,12 @@ public class OperatingStation {
 	
 	public void processNext() throws UnauthorizedException {
 		this.baggageScanner.moveBeltForward(this.inspector);
-		Tray currentTray = this.baggageScanner.getBelt().getBack();
+		Tray currentTray = this.baggageScanner.getBelt().takeNext();
 		HandBaggage handBaggage = currentTray.getHandBaggage();
 
 		ScanResult scanResult = this.baggageScanner.scan(this.inspector, handBaggage);
+		
+		System.out.println("baggage of passenger " + handBaggage.getPassenger().getName() + " is " + scanResult.getClass().getSimpleName());
 		
 		if (scanResult instanceof Clean) {
 			this.baggageScanner.getTrack2().push(currentTray);
@@ -37,15 +39,15 @@ public class OperatingStation {
 			// passenger joins in
 			Passenger passenger = handBaggage.getPassenger();
 
+			FederalPoliceOfficer officer = this.baggageScanner.getFederalPoliceOfficer();
+			officer.arrest(passenger);
+
 			if (scanResult instanceof WeaponFound || scanResult instanceof ExplosiveFound) {
 				this.baggageScanner.alarm(this.inspector);
 				
-				FederalPoliceOfficer officer = this.baggageScanner.getFederalPoliceOfficer();
-				officer.arrest(passenger);
-
 				List<FederalPoliceOfficer> support = officer.callSupport();
-				FederalPoliceOfficer officerO2 = support.get(1);
-				FederalPoliceOfficer officerO3 = support.get(2);
+				FederalPoliceOfficer officerO2 = support.get(0);
+				FederalPoliceOfficer officerO3 = support.get(1);
 
 				if(scanResult instanceof ExplosiveFound) {
 					Roboter roboter = this.baggageScanner.getFederalPoliceOfficer().getFederalPoliceOffice().getRoboter();
