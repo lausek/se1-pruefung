@@ -187,11 +187,22 @@ public class TestApplication {
         assertTrue(found);
     }
 
-    @Test
+    @TestFactory
     @Order(10)
     @DisplayName("Jeder Scanvorgang wird ordnungsgemäß mit einem Datensatz protokolliert.")
-    public void logging() {
+    Stream<DynamicTest> logging() {
         // TestFactory
+        List<HandBaggage> baggages = new ArrayList<>();
+        baggages.add(new HandBaggage()); // without forbidden item
+        baggages.add(new HandBaggage()); // wth forbidden item
+        List<Boolean> itemFound = new ArrayList<>();
+        itemFound.add(true);
+        itemFound.add(false);
+
+        return baggages.stream().map(baggage -> DynamicTest.dynamicTest("Scanvorgang prüfen", () -> {
+            int index = baggages.indexOf(baggage);
+            assertEquals(itemFound.get(index), BaggageScanner.scan(baggage).getResultMessage());
+        }));
     }
 
     @Test
