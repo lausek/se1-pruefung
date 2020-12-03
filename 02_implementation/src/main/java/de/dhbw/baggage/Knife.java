@@ -10,7 +10,7 @@ public class Knife extends ProhibitedItem {
 
 	@Override
 	public String getPattern() {
-		return "knife";
+		return "kn!fe";
 	}
 
 	@Override

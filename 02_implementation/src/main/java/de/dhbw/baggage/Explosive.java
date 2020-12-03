@@ -10,7 +10,7 @@ public class Explosive extends ProhibitedItem {
 
 	@Override
 	public String getPattern() {
-		return "explosive";
+		return "exp|os!ve";
 	}
 
 	@Override

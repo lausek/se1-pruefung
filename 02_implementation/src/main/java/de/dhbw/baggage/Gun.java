@@ -9,7 +9,7 @@ public class Gun extends ProhibitedItem {
 
 	@Override
 	public String getPattern() {
-		return "glock7";
+		return "glock|7";
 	}
 
 	@Override
