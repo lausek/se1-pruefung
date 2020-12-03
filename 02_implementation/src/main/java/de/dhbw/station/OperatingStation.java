@@ -23,16 +23,17 @@ public class OperatingStation {
 		this.baggageScanner = baggageScanner;
 		this.cardReader = new CardReader(this);
 	}
-	
+
 	public void processNext() throws UnauthorizedException {
 		this.baggageScanner.moveBeltForward(this.inspector);
 		Tray currentTray = this.baggageScanner.getBelt().takeNext();
 		HandBaggage handBaggage = currentTray.getHandBaggage();
 
 		ScanResult scanResult = this.baggageScanner.scan(this.inspector, handBaggage);
-		
-		System.out.println("baggage of passenger " + handBaggage.getPassenger().getName() + " is " + scanResult.getClass().getSimpleName());
-		
+
+		System.out.println("baggage of passenger " + handBaggage.getPassenger().getName() + " is "
+				+ scanResult.getClass().getSimpleName());
+
 		if (scanResult instanceof Clean) {
 			this.baggageScanner.getTrack2().push(currentTray);
 		} else {
@@ -44,28 +45,32 @@ public class OperatingStation {
 
 			if (scanResult instanceof WeaponFound || scanResult instanceof ExplosiveFound) {
 				this.baggageScanner.alarm(this.inspector);
-				
+
 				List<FederalPoliceOfficer> support = officer.callSupport();
 				FederalPoliceOfficer officerO2 = support.get(0);
 				FederalPoliceOfficer officerO3 = support.get(1);
 
-				if(scanResult instanceof ExplosiveFound) {
-					Roboter roboter = this.baggageScanner.getFederalPoliceOfficer().getFederalPoliceOffice().getRoboter();
+				if (scanResult instanceof ExplosiveFound) {
+					Roboter roboter = this.baggageScanner.getFederalPoliceOfficer().getFederalPoliceOffice()
+							.getRoboter();
 					roboter.setFederalPoliceOfficer(officerO2);
+
+					char[][] sample = this.inspector.swipe(handBaggage);
+					assert (this.baggageScanner.getExplosiveTraceDetector().test(sample));
 					
-					char[] sample = this.inspector.swipe(handBaggage);
-					this.baggageScanner.getExplosiveTraceDetector().test(sample);
+					roboter.destroy(handBaggage);
 
 					roboter.setFederalPoliceOfficer(null);
 				} else {
 					ProhibitedItem prohibitedItem = handBaggage.removeProhibitedItem();
 					officerO3.takeProhibitedItem(prohibitedItem);
 				}
-				
+
 				this.baggageScanner.unlock(this.baggageScanner.getSupervision().getSupervisor());
 			} else {
 				// knife was found
-				this.baggageScanner.getManualPostControl().getInspector().duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden();
+				this.baggageScanner.getManualPostControl().getInspector()
+						.duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden();
 			}
 
 			this.baggageScanner.getTrack1().push(currentTray);

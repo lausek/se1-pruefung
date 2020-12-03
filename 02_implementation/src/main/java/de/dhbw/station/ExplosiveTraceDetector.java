@@ -5,5 +5,13 @@ public class ExplosiveTraceDetector {
 	public ExplosiveTraceDetector() {
 	}
 
-	public void test(char[] sample) {}
+	public boolean test(char[][] sample) {
+		for (char[] trace : sample) {
+			String s = new String(trace);
+			if (s.contains("exp")) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

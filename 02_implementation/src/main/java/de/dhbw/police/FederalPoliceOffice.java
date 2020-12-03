@@ -2,14 +2,12 @@ package de.dhbw.police;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+import de.dhbw.RandomUtils;
 import de.dhbw.card.IDCard;
 
 public class FederalPoliceOffice {
 	
-	private static Random random = new Random();
-
 	private Roboter[] roboter;
 	private List<FederalPoliceOfficer> federalPoliceOfficers;
 
@@ -23,7 +21,7 @@ public class FederalPoliceOffice {
 	}
 	
 	public Roboter getRoboter() {
-		int idx = random.nextInt(this.roboter.length);
+		int idx = RandomUtils.nextInt(this.roboter.length);
 		return roboter[idx];
 	}
 

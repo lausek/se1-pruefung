@@ -1,5 +1,6 @@
 package de.dhbw.employee;
 
+import de.dhbw.RandomUtils;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.card.IDCard;
 import de.dhbw.station.ManualPostControl;
@@ -18,8 +19,11 @@ public class Inspector extends Employee {
 		this.isSenior = isSenior;
 	}
 
-	public char[] swipe(HandBaggage handBaggage) {
-		return null;
+	public char[][] swipe(HandBaggage handBaggage) {
+		char[][] sample = new char[30][10];
+		int lineIdx = RandomUtils.nextInt(30);
+		sample[lineIdx] = "    exp   ".toCharArray();
+		return sample;
 	}
 
 	public void duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden() { }
