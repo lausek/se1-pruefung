@@ -16,6 +16,12 @@ public class FederalPoliceOfficer extends Employee {
 	private List<ProhibitedItem> bigStashes;
 	private int grade;
 
+	public FederalPoliceOfficer(String name, FederalPoliceOffice federalPoliceOffice) {
+		super(name, IDCard.createOfficerCard("1234"));
+		this.federalPoliceOffice = federalPoliceOffice;
+		this.bigStashes = new ArrayList<>();
+	}
+
 	public FederalPoliceOfficer(String name, IDCard idCard, FederalPoliceOffice federalPoliceOffice) {
 		super(name, idCard);
 		this.federalPoliceOffice = federalPoliceOffice;

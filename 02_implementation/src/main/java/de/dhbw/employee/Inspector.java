@@ -14,6 +14,11 @@ public class Inspector extends Employee {
 	private OperatingStation operatingStation;
 	private boolean isSenior;
 
+	public Inspector(String name, boolean isSenior) {
+		super(name, IDCard.createInspectorCard("1234"));
+		this.isSenior = isSenior;
+	}
+
 	public Inspector(String name, IDCard idCard, boolean isSenior) {
 		super(name, idCard);
 		this.isSenior = isSenior;

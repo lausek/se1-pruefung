@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.dhbw.RandomUtils;
+import de.dhbw.card.CardType;
 import de.dhbw.card.IDCard;
+import de.dhbw.card.ProfileType;
 
 public class FederalPoliceOffice {
 	
@@ -15,9 +17,9 @@ public class FederalPoliceOffice {
 		this.roboter = new Roboter[] { new Roboter(), new Roboter(), new Roboter() };
 		this.federalPoliceOfficers = new ArrayList<>();
 		
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Wesley Snipes", new IDCard(), this));
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Toto", new IDCard(), this));
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Harry", new IDCard(), this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Wesley Snipes", this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Toto", this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Harry", this));
 	}
 	
 	public Roboter getRoboter() {

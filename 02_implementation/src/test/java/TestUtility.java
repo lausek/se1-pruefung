@@ -1,24 +1,29 @@
+import de.dhbw.RandomUtils;
 import de.dhbw.baggage.HandBaggage;
+import de.dhbw.baggage.ProhibitedItem;
+import de.dhbw.employee.Inspector;
 import de.dhbw.station.BaggageScanner;
+import de.dhbw.station.UnauthorizedException;
 import de.dhbw.station.result.Clean;
 import de.dhbw.station.result.ScanResult;
 
 public class TestUtility {
-    public boolean scan(String item, BaggageScanner baggageScanner) {
-        HandBaggage handBaggage = new HandBaggage();
-        switch (item) {
-            case "Knife":
-                handBaggage.setContent("kn!fe");
-                break;
-            case "Explosive":
-                handBaggage.setContent("exp|os!ve");
-                break;
-            default:
-                handBaggage.setContent("glock|7");
-                break;
-        }
+    public boolean scan(ProhibitedItem prohibitedItem, BaggageScanner baggageScanner) {
+        HandBaggage handBaggage = new HandBaggage(null);
+        String content = prohibitedItem.getPattern();
+        int layerIdx = RandomUtils.nextInt(5);
 
-        ScanResult feedback = baggageScanner.scan(handBaggage);
+        handBaggage.getLayers()[layerIdx].setContent(content);
+
+        Inspector inspector = baggageScanner.getOperatingStation().getInspector();
+        ScanResult feedback;
+
+		try {
+			feedback = baggageScanner.scan(inspector, handBaggage);
+		} catch (UnauthorizedException e) {
+			return false;
+		}
+
         return !(feedback instanceof Clean);
     }
 }

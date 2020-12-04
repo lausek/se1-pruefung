@@ -9,6 +9,10 @@ public class Supervisor extends Employee {
 	private boolean isSenior;
 	private boolean isExecutive;
 
+	public Supervisor(String name) {
+		super(name, IDCard.createSupervisorCard("1234"));
+	}
+
 	public Supervisor(String name, IDCard idCard) {
 		super(name, idCard);
 	}

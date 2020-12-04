@@ -8,6 +8,7 @@ import de.dhbw.Configuration;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.baggage.Layer;
 import de.dhbw.baggage.ProhibitedItem;
+import de.dhbw.card.IDCard;
 import de.dhbw.employee.Employee;
 import de.dhbw.employee.HouseKeeper;
 import de.dhbw.employee.Inspector;
@@ -21,7 +22,7 @@ import de.dhbw.station.result.Clean;
 import de.dhbw.station.result.ScanResult;
 
 public class BaggageScanner {
-	
+
 	public final int DEFAULT_TRAY_AMOUNT = 30;
 
 	private Stack<Tray> trays;
@@ -43,7 +44,7 @@ public class BaggageScanner {
 
 	public BaggageScanner() {
 		this.trays = new Stack<>();
-		for(int i = 0; i < DEFAULT_TRAY_AMOUNT; i++) {
+		for (int i = 0; i < DEFAULT_TRAY_AMOUNT; i++) {
 			this.addTray(new Tray(this));
 		}
 
@@ -54,13 +55,22 @@ public class BaggageScanner {
 		this.operatingStation = new OperatingStation(this);
 		this.manualPostControl = new ManualPostControl(this);
 		this.supervision = new Supervision(this);
-		
+
 		this.alarmActive = false;
 		this.status = Status.SHUTDOWN;
 		this.scanLog = new ArrayList<>(1500);
 		this.postBelts = new Belt[] { new Belt(this), new Belt(this) };
 	}
-	
+
+	private void authenticationCheck(Employee employee, Class<?>... classes) throws UnauthorizedException {
+		for (Class<?> cls : classes) {
+			if (cls.isInstance(employee)) {
+				return;
+			}
+		}
+		throw new UnauthorizedException();
+	}
+
 	public void addTray(Tray tray) {
 		this.trays.add(tray);
 	}
@@ -69,33 +79,35 @@ public class BaggageScanner {
 		return this.trays.pop();
 	}
 
-	public void moveBeltForward(Employee employee) throws UnauthorizedException {}
+	public void moveBeltForward(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Inspector.class);
+	}
 
-	public void moveBeltBackwards(Employee employee) throws UnauthorizedException {}
+	public void moveBeltBackwards(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Inspector.class);
+	}
 
 	public ScanResult scan(Employee employee, HandBaggage handBaggage) throws UnauthorizedException {
-		assert(this.status == Status.ACTIVE);
+		this.authenticationCheck(employee, Inspector.class);
+		assert (this.status == Status.ACTIVE);
 		this.status = Status.IN_USE;
-		
-		ScanResult scanResult = new Clean();
-		IStringMatching searcher = Configuration.SEARCH_ALGORITHM == "BoyerMoore" ? new BoyerMoore() : new KnuthMorrisPratt();
-		
-		if(handBaggage.getPassenger().getName().equals("Philip Bottomley")) {
-			System.out.println();
-		}
 
-		for(Layer layer : handBaggage.getLayers()) {
-			for(ProhibitedItem prohibitedItem : Configuration.PROHIBITED_ITEMS) {
+		ScanResult scanResult = new Clean();
+		IStringMatching searcher = Configuration.SEARCH_ALGORITHM == "BoyerMoore" ? new BoyerMoore()
+				: new KnuthMorrisPratt();
+
+		for (Layer layer : handBaggage.getLayers()) {
+			for (ProhibitedItem prohibitedItem : Configuration.PROHIBITED_ITEMS) {
 				int position = searcher.search(layer.getContent(), prohibitedItem.getPattern());
-				if(0 <= position) {
-					 scanResult = prohibitedItem.createResult(position);
-					 break;
+				if (0 <= position) {
+					scanResult = prohibitedItem.createResult(position);
+					break;
 				}
 			}
 		}
 
 		Record record = new Record(scanResult);
-		
+
 		scanLog.add(record);
 
 		this.status = Status.ACTIVE;
@@ -104,26 +116,31 @@ public class BaggageScanner {
 	}
 
 	public void alarm(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Inspector.class);
 		this.alarmActive = true;
 		this.status = Status.LOCKED;
 	}
 
-	public void report(Employee employee) throws UnauthorizedException {}
+	public void report(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Supervisor.class);
+	}
 
-	public void maintenance(Employee employee) throws UnauthorizedException {}
+	public void maintenance(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Technician.class);
+	}
 
 	public void start(Employee employee) throws UnauthorizedException {
+		this.authenticationCheck(employee, Supervisor.class);
+		this.status = Status.ACTIVE;
 	}
 
 	public void shutdown(Employee employee) throws UnauthorizedException {
 		this.alarmActive = false;
 		this.status = Status.SHUTDOWN;
 	}
-	
+
 	public void unlock(Employee employee) throws UnauthorizedException {
-		if(!(employee instanceof Supervisor)) {
-			throw new UnauthorizedException();
-		}
+		this.authenticationCheck(employee, Supervisor.class);
 		this.alarmActive = false;
 		this.status = Status.ACTIVE;
 	}
@@ -167,7 +184,7 @@ public class BaggageScanner {
 	public boolean isLocked() {
 		return Status.LOCKED == this.status;
 	}
-	
+
 	public Belt getTrack1() {
 		return this.postBelts[0];
 	}
@@ -186,5 +203,9 @@ public class BaggageScanner {
 
 	public void setHouseKeeper(HouseKeeper houseKeeper) {
 		this.houseKeeper = houseKeeper;
+	}
+	
+	public List<Record> getScanLog() {
+		return this.scanLog;
 	}
 }

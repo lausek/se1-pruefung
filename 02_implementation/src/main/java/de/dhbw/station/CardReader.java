@@ -16,15 +16,15 @@ public class CardReader {
 			return false;
 		}
 
-		int tries = 0;
+		int tries = 1;
 		for (String pin : pins) {
+			if (this.inputPin(card, pin)) {
+				return true;
+			}
+
 			if (3 <= tries) {
 				card.lock();
 				break;
-			}
-
-			if (this.inputPin(card, pin)) {
-				return true;
 			}
 
 			tries += 1;

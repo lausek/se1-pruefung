@@ -4,23 +4,31 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import de.dhbw.Application;
 import de.dhbw.Passenger;
+import de.dhbw.baggage.Explosive;
+import de.dhbw.baggage.Gun;
 import de.dhbw.baggage.HandBaggage;
+import de.dhbw.baggage.Knife;
+import de.dhbw.baggage.Layer;
 import de.dhbw.card.IDCard;
 import de.dhbw.card.ProfileType;
 import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
 import de.dhbw.employee.Technician;
 import de.dhbw.police.FederalPoliceOfficer;
+import de.dhbw.police.Roboter;
 import de.dhbw.station.BaggageScanner;
 import de.dhbw.station.Belt;
 import de.dhbw.station.CardReader;
 import de.dhbw.station.Status;
 import de.dhbw.station.UnauthorizedException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -79,7 +87,7 @@ public class TestApplication {
         // AssertEquals auf Status von Ausweis
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
-        IDCard idCard = baggageScanner.getFederalPoliceOfficer().getIDCard();
+        IDCard idCard = baggageScanner.getSupervision().getSupervisor().getIDCard();
         assertFalse(idCard.isLocked());
         String[] tries = new String[] { "0000", "0000", "0000" };
         assertFalse(cardReader.doAuthentication(idCard, tries));
@@ -91,8 +99,7 @@ public class TestApplication {
     @DisplayName("Ein Mitarbeiter mit dem Profil K oder O kann sich an einem Gepäckscanner nicht anmelden.")
     public void scannerAccess() {
         // AssertTrue oder False, keine TestFactory
-        IDCard idCard = new IDCard();
-        idCard.getMagnetStripe().setProfileType(ProfileType.K);
+        IDCard idCard = IDCard.createOfficerCard("1234");
         BaggageScanner baggageScanner = application.getBaggageScanner();
         CardReader cardReader = baggageScanner.getOperatingStation().getCardReader();
         boolean feedback = cardReader.swipeCard(idCard);
@@ -106,23 +113,9 @@ public class TestApplication {
         // Kombinierter Test mit AssertEquals
         BaggageScanner baggageScanner = application.getBaggageScanner();
 
-        FederalPoliceOfficer officer = new FederalPoliceOfficer(null);
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(officer));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(officer));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(officer));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.scan(officer, null));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(officer));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(officer));
-
-        Inspector inspector = new Inspector();
-        assertDoesNotThrow(() -> baggageScanner.alarm(inspector));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(inspector));
-        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(inspector));
-        assertDoesNotThrow(() -> baggageScanner.scan(inspector, null));
-        assertDoesNotThrow(() -> baggageScanner.moveBeltForward(inspector));
-        assertDoesNotThrow(() -> baggageScanner.moveBeltBackwards(inspector));
-
-        Supervisor supervisor = new Supervisor();
+        Supervisor supervisor = new Supervisor(null);
+        // this starts the baggageScanner
+        assertDoesNotThrow(() -> baggageScanner.start(supervisor));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(supervisor));
         assertDoesNotThrow(() -> baggageScanner.report(supervisor));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(supervisor));
@@ -130,7 +123,27 @@ public class TestApplication {
         assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(supervisor));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(supervisor));
 
-        Technician technician = new Technician();
+        FederalPoliceOfficer officer = new FederalPoliceOfficer(null, null);
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.start(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.scan(officer, null));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltForward(officer));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.moveBeltBackwards(officer));
+
+        Inspector inspector = new Inspector(null, false);
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.start(inspector));
+        assertDoesNotThrow(() -> baggageScanner.alarm(inspector));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.report(inspector));
+        assertThrows(UnauthorizedException.class, () -> baggageScanner.maintenance(inspector));
+        
+        assertDoesNotThrow(() -> baggageScanner.unlock(new Supervisor(null)));
+        assertDoesNotThrow(() -> baggageScanner.scan(inspector, new HandBaggage(null)));
+        assertDoesNotThrow(() -> baggageScanner.moveBeltForward(inspector));
+        assertDoesNotThrow(() -> baggageScanner.moveBeltBackwards(inspector));
+
+        Technician technician = new Technician(null);
         assertThrows(UnauthorizedException.class, () -> baggageScanner.alarm(technician));
         assertThrows(UnauthorizedException.class, () -> baggageScanner.report(technician));
         assertDoesNotThrow(() -> baggageScanner.maintenance(technician));
@@ -163,7 +176,7 @@ public class TestApplication {
     public void knife() {
         // TestUtility-Klasse (einmal erkennen langt, nicht für alle)
         TestUtility testUtility = new TestUtility();
-        boolean found = testUtility.scan("Knife", application.getBaggageScanner());
+        boolean found = testUtility.scan(new Knife(), application.getBaggageScanner());
         assertTrue(found);
     }
 
@@ -173,7 +186,7 @@ public class TestApplication {
     public void gun() {
         // TestUtility-Klasse (einmal erkennen langt, nicht für alle)
         TestUtility testUtility = new TestUtility();
-        boolean found = testUtility.scan("Gun", application.getBaggageScanner());
+        boolean found = testUtility.scan(new Gun(), application.getBaggageScanner());
         assertTrue(found);
     }
 
@@ -183,26 +196,33 @@ public class TestApplication {
     public void explosive() {
         // TestUtility-Klasse (einmal erkennen langt, nicht für alle)
         TestUtility testUtility = new TestUtility();
-        boolean found = testUtility.scan("Explosive", application.getBaggageScanner());
+        boolean found = testUtility.scan(new Explosive(), application.getBaggageScanner());
         assertTrue(found);
     }
 
-    @TestFactory
+    /* @TestFactory */
     @Order(10)
     @DisplayName("Jeder Scanvorgang wird ordnungsgemäß mit einem Datensatz protokolliert.")
-    Stream<DynamicTest> logging() {
+    //Stream<DynamicTest> logging() {
+    public void logging() {
+    	assertEquals(0, application.getBaggageScanner().getScanLog().size());
+    	application.runSimulation();
+    	assertEquals(606, application.getBaggageScanner().getScanLog().size());
+    	/*
+    	return null;
         // TestFactory
         List<HandBaggage> baggages = new ArrayList<>();
         baggages.add(new HandBaggage()); // without forbidden item
-        baggages.add(new HandBaggage()); // wth forbidden item
+        baggages.add(new HandBaggage()); // with forbidden item
         List<Boolean> itemFound = new ArrayList<>();
         itemFound.add(true);
         itemFound.add(false);
 
         return baggages.stream().map(baggage -> DynamicTest.dynamicTest("Scanvorgang prüfen", () -> {
             int index = baggages.indexOf(baggage);
-            assertEquals(itemFound.get(index), BaggageScanner.scan(baggage).getResultMessage());
+            assertEquals(itemFound.get(index), this.baggageScanner.scan(baggage).getResultMessage());
         }));
+        */
     }
 
     @Test
@@ -221,10 +241,10 @@ public class TestApplication {
         // Code für Ablauf
         // Durch Inspektor auf Bahn 01 leiten
         assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
-        
         Belt belt = application.getBaggageScanner().getBelt();
         // Messer entnommen
-        assertFalse(handBaggage.getLayer().getContent().contains("kn!fe"));
+        Layer[] layers = handBaggage.getLayers();
+        assertFalse(Arrays.stream(layers).anyMatch(layer -> layer.getContent().contains("kn!fe")));
         // Schale mit Handgepäckstück am Ende des Förderbands abgelegt
         assertEquals(handBaggage, belt.getBack());
         // Button Pfeil nach links und Gepäck fährt wieder an Anfang
@@ -243,9 +263,10 @@ public class TestApplication {
         // BaggageScanner Zustand locked
         assertTrue(baggageScanner.isLocked());
         // Festnahme
-        assertTrue(passenger.isArrested());
+        assertTrue(handBaggage.getPassenger().isArrested());
         // Supervisor entnimmt Waffe und übergibt Bundespolizist
-        assertFalse(handBaggage.getLayer().getContent().contains("glock|7"));
+        Layer[] layers = handBaggage.getLayers();
+        assertFalse(Arrays.stream(layers).anyMatch(layer -> layer.getContent().contains("glock|7")));
         // Betrieb fortsetzen (Alarm aus & Zustand unlocked)
         assertFalse(baggageScanner.isAlarmActive());
         assertEquals(Status.ACTIVE, baggageScanner.getStatus());
@@ -263,16 +284,12 @@ public class TestApplication {
         // BaggageScanner Zustand locked
         assertTrue(baggageScanner.isLocked());
         // Inspektor swiped mit Teststreifen über Gepäck und liest in ExplosivesTraceDetector einlesen
-        // Code boolean found = explosiveTraceDetector.test();
-        assertTrue(found);
+        char[][] sample = null;
+        assertTrue(application.getBaggageScanner().getExplosiveTraceDetector().test(sample));
         // Zerstörung in 1000 Teile mit Länge 50
-        char[][] handBaggageContent = handBaggage.getLayer().getContent();
-        assertEquals(handBaggageContent.length, 1000);
-        if (handBaggageContent.length == 1000) {
-            for (int i = 0; i <= 1000; i++) {
-                assertEquals(handBaggageContent[i].length, 50);
-            }
-        }
+        String[] destroyedParts = new Roboter().destroy(handBaggage);
+        assertEquals(1000, destroyedParts.length);
+        assertTrue(Arrays.stream(destroyedParts).allMatch(part -> part.length() == 50));
         // Betrieb fortsetzen (Alarm aus & Zustand unlocked)
         assertFalse(baggageScanner.isAlarmActive());
         assertFalse(baggageScanner.isLocked());

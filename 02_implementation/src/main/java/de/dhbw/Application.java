@@ -37,13 +37,20 @@ public class Application {
 		this.federalPoliceOffice = new FederalPoliceOffice();
 		this.passengers = new ArrayList<>();
 		
-		this.baggageScanner.getRollerConveyor().setInspector(new Inspector("Clint Eastwood", new IDCard(), true));
-		this.baggageScanner.getOperatingStation().setInspector(new Inspector("Natalie Portman", new IDCard(), false));
-		this.baggageScanner.getManualPostControl().setInspector(new Inspector("Bruce Willis", new IDCard(), true));
-		this.baggageScanner.getSupervision().setSupervisor(new Supervisor("Jodie Foster", new IDCard()));
+		this.baggageScanner.getRollerConveyor().setInspector(new Inspector("Clint Eastwood", true));
+		this.baggageScanner.getOperatingStation().setInspector(new Inspector("Natalie Portman", false));
+		this.baggageScanner.getManualPostControl().setInspector(new Inspector("Bruce Willis", true));
+		this.baggageScanner.getSupervision().setSupervisor(new Supervisor("Jodie Foster"));
 		this.baggageScanner.setFederalPoliceOfficer(this.federalPoliceOffice.getOfficers().get(0));
-		this.baggageScanner.setTechnician(new Technician("Jason Statham", new IDCard()));
-		this.baggageScanner.setHouseKeeper(new HouseKeeper("Jason Clarke", new IDCard()));
+		this.baggageScanner.setTechnician(new Technician("Jason Statham"));
+		this.baggageScanner.setHouseKeeper(new HouseKeeper("Jason Clarke"));
+		
+		System.out.println("starting baggage scanner...");
+		try {
+			this.baggageScanner.start(this.baggageScanner.getSupervision().getSupervisor());
+		} catch (UnauthorizedException e1) {
+			e1.printStackTrace();
+		}
 
 		// load passengers from resource file
 		try (InputStream passengerStream = this.getClass().getResourceAsStream("/passengers.csv")) {

@@ -8,13 +8,15 @@ public class IDCard {
 
 	private MagnetStripe magnetStripe;
 	private Employee employee;
-	private CardType type;
+	private CardType cardType;
 	private int id;
 	private LocalDateTime validUntil;
 	private boolean isLocked;
 
-	public IDCard() {
-		this.magnetStripe = new MagnetStripe();
+	public IDCard(CardType cardType, ProfileType profileType, String pin) {
+		this.magnetStripe = new MagnetStripe(this, profileType, pin);
+		this.cardType = cardType;
+		this.validUntil = LocalDateTime.now().plusDays(30);
 	}
 
 	public boolean isLocked() {
@@ -26,7 +28,7 @@ public class IDCard {
 	}
 
 	public CardType getCardType() {
-		return type;
+		return cardType;
 	}
 
 	public void lock() {
@@ -39,5 +41,25 @@ public class IDCard {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+	
+	public static IDCard createOfficerCard(String pin) {
+		return new IDCard(CardType.EXTERNAL, ProfileType.O, pin);
+	}
+
+	public static IDCard createInspectorCard(String pin) {
+		return new IDCard(CardType.STAFF, ProfileType.I, pin);
+	}
+
+	public static IDCard createSupervisorCard(String pin) {
+		return new IDCard(CardType.STAFF, ProfileType.S, pin);
+	}
+
+	public static IDCard createTechnicianCard(String pin) {
+		return new IDCard(CardType.STAFF, ProfileType.T, pin);
+	}
+
+	public static IDCard createHouseKeeperCard(String pin) {
+		return new IDCard(CardType.STAFF, ProfileType.K, pin);
 	}
 }
