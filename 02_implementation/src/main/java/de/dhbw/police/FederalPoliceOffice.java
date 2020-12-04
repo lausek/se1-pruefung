@@ -14,9 +14,9 @@ public class FederalPoliceOffice {
 		this.roboter = new Roboter[] { new Roboter(), new Roboter(), new Roboter() };
 		this.federalPoliceOfficers = new ArrayList<>();
 		
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Wesley Snipes", this));
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Toto", this));
-		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Harry", this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Wesley Snipes", "1962-07-31", this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Toto", "1969-01-01", this));
+		this.federalPoliceOfficers.add(new FederalPoliceOfficer("Harry", "1969-01-01", this));
 	}
 	
 	public Roboter getRoboter() {

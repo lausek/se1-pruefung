@@ -1,6 +1,7 @@
 package de.dhbw.employee;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import de.dhbw.card.IDCard;
 
@@ -9,11 +10,18 @@ public abstract class Employee {
 	private IDCard idCard;
 	protected int id;
 	protected String name;
-	protected LocalDateTime birthDate;
+	protected LocalDate birthDate;
 
-	public Employee(String name, IDCard idCard) {
+	public Employee(String name, String birthDate, IDCard idCard) {
 		this.name = name;
 		this.idCard = idCard;
+
+		if (birthDate == null) {
+			birthDate = "2020-01-01";
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		this.birthDate = LocalDate.parse(birthDate, formatter);
 	}
 
 	public String getName() {
@@ -32,7 +40,7 @@ public abstract class Employee {
 		return id;
 	}
 
-	public LocalDateTime getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 }

@@ -1,5 +1,7 @@
 package de.dhbw.employee;
 
+import java.time.LocalDateTime;
+
 import de.dhbw.RandomUtils;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.card.IDCard;
@@ -14,13 +16,13 @@ public class Inspector extends Employee {
 	private OperatingStation operatingStation;
 	private boolean isSenior;
 
-	public Inspector(String name, boolean isSenior) {
-		super(name, IDCard.createInspectorCard("1234"));
+	public Inspector(String name, String birthDate, boolean isSenior) {
+		super(name, birthDate, IDCard.createInspectorCard("1234"));
 		this.isSenior = isSenior;
 	}
 
-	public Inspector(String name, IDCard idCard, boolean isSenior) {
-		super(name, idCard);
+	public Inspector(String name, String birthDate,IDCard idCard, boolean isSenior) {
+		super(name, birthDate, idCard);
 		this.isSenior = isSenior;
 	}
 

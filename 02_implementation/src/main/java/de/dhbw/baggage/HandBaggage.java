@@ -24,9 +24,20 @@ public class HandBaggage {
 	}
 
 	public ProhibitedItem removeProhibitedItem() {
+		ProhibitedItem prohibitedItem = null;
 		for (Layer layer : this.getLayers()) {
+			String pattern = layer.getContent().strip();
+
+			if (pattern.contains(new Knife().getPattern())) {
+				prohibitedItem = new Knife();
+			} else if (pattern.contains(new Explosive().getPattern())) {
+				prohibitedItem = new Explosive();
+			} else if (pattern.contains(new Gun().getPattern())) {
+				prohibitedItem = new Gun();
+			}
+
 			layer.setContent("                           ");
 		}
-		return null;
+		return prohibitedItem;
 	}
 }

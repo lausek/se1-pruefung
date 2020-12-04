@@ -14,6 +14,7 @@ import de.dhbw.employee.Supervisor;
 import de.dhbw.employee.Technician;
 import de.dhbw.police.FederalPoliceOffice;
 import de.dhbw.station.BaggageScanner;
+import de.dhbw.station.CardReader;
 import de.dhbw.station.Tray;
 import de.dhbw.station.UnauthorizedException;
 
@@ -34,17 +35,19 @@ public class Application {
 		this.federalPoliceOffice = new FederalPoliceOffice();
 		this.passengers = new ArrayList<>();
 
-		this.baggageScanner.getRollerConveyor().setInspector(new Inspector("Clint Eastwood", true));
-		this.baggageScanner.getOperatingStation().setInspector(new Inspector("Natalie Portman", false));
-		this.baggageScanner.getManualPostControl().setInspector(new Inspector("Bruce Willis", true));
-		this.baggageScanner.getSupervision().setSupervisor(new Supervisor("Jodie Foster"));
+		this.baggageScanner.getRollerConveyor().setInspector(new Inspector("Clint Eastwood", "1930-05-31", true));
+		this.baggageScanner.getOperatingStation().setInspector(new Inspector("Natalie Portman", "1981-06-09", false));
+		this.baggageScanner.getManualPostControl().setInspector(new Inspector("Bruce Willis", "1955-03-19", true));
+		this.baggageScanner.getSupervision().setSupervisor(new Supervisor("Jodie Foster", "1962-11-19"));
 		this.baggageScanner.setFederalPoliceOfficer(this.federalPoliceOffice.getOfficers().get(0));
-		this.baggageScanner.setTechnician(new Technician("Jason Statham"));
-		this.baggageScanner.setHouseKeeper(new HouseKeeper("Jason Clarke"));
+		this.baggageScanner.setTechnician(new Technician("Jason Statham", "1967-07-26"));
+		this.baggageScanner.setHouseKeeper(new HouseKeeper("Jason Clarke", "1969-07-17"));
 
 		System.out.println("starting baggage scanner...");
 		try {
 			this.baggageScanner.start(this.baggageScanner.getSupervision().getSupervisor());
+			Inspector inspector = this.baggageScanner.getOperatingStation().getInspector();
+			this.baggageScanner.getOperatingStation().getCardReader().doAuthentication(inspector.getIDCard(), new String[] { "1234" });
 		} catch (UnauthorizedException e1) {
 			e1.printStackTrace();
 		}

@@ -131,7 +131,7 @@ public class BaggageScanner {
 
 	public void start(Employee employee) throws UnauthorizedException {
 		this.authenticationCheck(employee, Supervisor.class);
-		this.status = Status.ACTIVE;
+		this.status = Status.DEACTIVATED;
 	}
 
 	public void shutdown(Employee employee) throws UnauthorizedException {
@@ -219,5 +219,9 @@ public class BaggageScanner {
 
 	public Scanner getScanner() {
 		return scanner;
+	}
+
+	public void activate() {
+		this.status = Status.ACTIVE;
 	}
 }

@@ -16,14 +16,14 @@ public class FederalPoliceOfficer extends Employee {
 	private List<ProhibitedItem> bigStashes;
 	private int grade;
 
-	public FederalPoliceOfficer(String name, FederalPoliceOffice federalPoliceOffice) {
-		super(name, IDCard.createOfficerCard("1234"));
+	public FederalPoliceOfficer(String name, String birthDate, FederalPoliceOffice federalPoliceOffice) {
+		super(name, birthDate, IDCard.createOfficerCard("1234"));
 		this.federalPoliceOffice = federalPoliceOffice;
 		this.bigStashes = new ArrayList<>();
 	}
 
-	public FederalPoliceOfficer(String name, IDCard idCard, FederalPoliceOffice federalPoliceOffice) {
-		super(name, idCard);
+	public FederalPoliceOfficer(String name, String birthDate, IDCard idCard, FederalPoliceOffice federalPoliceOffice) {
+		super(name, birthDate, idCard);
 		this.federalPoliceOffice = federalPoliceOffice;
 		this.bigStashes = new ArrayList<>();
 	}
@@ -42,6 +42,10 @@ public class FederalPoliceOfficer extends Employee {
 
 	public void takeProhibitedItem(ProhibitedItem prohibitedItem) {
 		this.bigStashes.add(prohibitedItem);
+	}
+	
+	public List<ProhibitedItem> getBigStashes() {
+		return this.bigStashes;
 	}
 
 	public BaggageScanner getBaggageScanner() {

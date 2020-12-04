@@ -19,6 +19,7 @@ public class CardReader {
 		int tries = 1;
 		for (String pin : pins) {
 			if (this.inputPin(card, pin)) {
+				this.operatingStation.getBaggageScanner().activate();
 				return true;
 			}
 
