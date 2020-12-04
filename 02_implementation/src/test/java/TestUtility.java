@@ -8,7 +8,7 @@ import de.dhbw.station.result.Clean;
 import de.dhbw.station.result.ScanResult;
 
 public class TestUtility {
-	public boolean scan(ProhibitedItem prohibitedItem, BaggageScanner baggageScanner) {
+	public static boolean scan(ProhibitedItem prohibitedItem, BaggageScanner baggageScanner) {
 		HandBaggage handBaggage = new HandBaggage(null);
 		String content = prohibitedItem.getPattern();
 		int layerIdx = RandomUtils.nextInt(5);

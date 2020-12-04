@@ -175,8 +175,7 @@ public class TestApplication {
 	@DisplayName("Es wird der verbotene Gegenstand Messer in einem Handgepäckstück erkannt.")
 	public void knife() {
 		// TestUtility-Klasse (einmal erkennen langt, nicht für alle)
-		TestUtility testUtility = new TestUtility();
-		boolean found = testUtility.scan(new Knife(), application.getBaggageScanner());
+		boolean found = TestUtility.scan(new Knife(), application.getBaggageScanner());
 		assertTrue(found);
 	}
 
@@ -185,8 +184,7 @@ public class TestApplication {
 	@DisplayName("Es wird der verbotene Gegenstand Waffe in einem Handgepäckstück erkannt.")
 	public void gun() {
 		// TestUtility-Klasse (einmal erkennen langt, nicht für alle)
-		TestUtility testUtility = new TestUtility();
-		boolean found = testUtility.scan(new Gun(), application.getBaggageScanner());
+		boolean found = TestUtility.scan(new Gun(), application.getBaggageScanner());
 		assertTrue(found);
 	}
 
@@ -195,8 +193,7 @@ public class TestApplication {
 	@DisplayName("Es wird der verbotene Gegenstand Explosivstoff in einem Handgepäckstück erkannt.")
 	public void explosive() {
 		// TestUtility-Klasse (einmal erkennen langt, nicht für alle)
-		TestUtility testUtility = new TestUtility();
-		boolean found = testUtility.scan(new Explosive(), application.getBaggageScanner());
+		boolean found = TestUtility.scan(new Explosive(), application.getBaggageScanner());
 		assertTrue(found);
 	}
 
