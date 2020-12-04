@@ -36,7 +36,7 @@ public class Application {
 		this.baggageScanner = new BaggageScanner();
 		this.federalPoliceOffice = new FederalPoliceOffice();
 		this.passengers = new ArrayList<>();
-		
+
 		this.baggageScanner.getRollerConveyor().setInspector(new Inspector("Clint Eastwood", true));
 		this.baggageScanner.getOperatingStation().setInspector(new Inspector("Natalie Portman", false));
 		this.baggageScanner.getManualPostControl().setInspector(new Inspector("Bruce Willis", true));
@@ -44,7 +44,7 @@ public class Application {
 		this.baggageScanner.setFederalPoliceOfficer(this.federalPoliceOffice.getOfficers().get(0));
 		this.baggageScanner.setTechnician(new Technician("Jason Statham"));
 		this.baggageScanner.setHouseKeeper(new HouseKeeper("Jason Clarke"));
-		
+
 		System.out.println("starting baggage scanner...");
 		try {
 			this.baggageScanner.start(this.baggageScanner.getSupervision().getSupervisor());
@@ -72,46 +72,65 @@ public class Application {
 		System.out.println("starting simulation ...");
 
 		for (Passenger passenger : passengers) {
-			// take baggage from passenger and put it onto belt
-			List<HandBaggage> passengerBaggage = passenger.getHandBaggage();
-			List<HandBaggage> scannedPassengerBaggage = new ArrayList<>(3);
+			this.processPassenger(passenger);
 
-			while (!passengerBaggage.isEmpty()) {
-				HandBaggage handBaggage = passengerBaggage.remove(0);
-
-				Tray tray = this.baggageScanner.takeTray();
-				tray.setHandBaggage(handBaggage);
-
-				this.baggageScanner.getRollerConveyor().push(tray);
-
-				try {
-					this.baggageScanner.getOperatingStation().processNext();
-				} catch (UnauthorizedException e) {
-					e.printStackTrace();
-				}
-
-				// if the passenger was arrested, stop processing the baggages
-				if (passenger.isArrested()) {
-					tray = this.baggageScanner.getTrack1().takeNext();
-					this.baggageScanner.addTray(tray);
-					break;
-				}
-
-				// items on this track are clean
-				tray = this.baggageScanner.getTrack2().takeNext();
-				handBaggage = tray.removeHandBaggage();
-
-				// return tray to baggage scanner
-				this.baggageScanner.addTray(tray);
-
-				// return handbaggage to passenger
-				scannedPassengerBaggage.add(handBaggage);
-			}
-			
-			passenger.getHandBaggage().addAll(scannedPassengerBaggage);
+			this.postprocessPassenger();
 		}
 
 		System.out.println("finalizing simulation ...");
+	}
+
+	public void pushHandBaggageThrough(HandBaggage handBaggage) {
+		Tray tray = this.baggageScanner.takeTray();
+		tray.setHandBaggage(handBaggage);
+
+		this.baggageScanner.getRollerConveyor().push(tray);
+
+		try {
+			this.baggageScanner.getOperatingStation().processNext();
+		} catch (UnauthorizedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void postprocessPassenger() {
+		if (this.baggageScanner.isAlarmActive()) {
+			try {
+				this.baggageScanner.unlock(this.baggageScanner.getSupervision().getSupervisor());
+			} catch (UnauthorizedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void processPassenger(Passenger passenger) {
+		// take baggage from passenger and put it onto belt
+		List<HandBaggage> passengerBaggage = passenger.getHandBaggage();
+		List<HandBaggage> scannedPassengerBaggage = new ArrayList<>(3);
+
+		while (!passengerBaggage.isEmpty()) {
+			HandBaggage handBaggage = passengerBaggage.remove(0);
+
+			this.pushHandBaggageThrough(handBaggage);
+
+			// items on this track are clean
+			Tray tray = passenger.isArrested() ? this.baggageScanner.getTrack1().takeNext()
+					: this.baggageScanner.getTrack2().takeNext();
+			handBaggage = tray.removeHandBaggage();
+
+			// return tray to baggage scanner
+			this.baggageScanner.addTray(tray);
+
+			// if the passenger was arrested, stop processing the baggages
+			if (passenger.isArrested()) {
+				return;
+			}
+
+			// return handbaggage to passenger
+			scannedPassengerBaggage.add(handBaggage);
+		}
+
+		passenger.getHandBaggage().addAll(scannedPassengerBaggage);
 	}
 
 	public BaggageScanner getBaggageScanner() {

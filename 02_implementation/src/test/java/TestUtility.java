@@ -8,15 +8,15 @@ import de.dhbw.station.result.Clean;
 import de.dhbw.station.result.ScanResult;
 
 public class TestUtility {
-    public boolean scan(ProhibitedItem prohibitedItem, BaggageScanner baggageScanner) {
-        HandBaggage handBaggage = new HandBaggage(null);
-        String content = prohibitedItem.getPattern();
-        int layerIdx = RandomUtils.nextInt(5);
+	public boolean scan(ProhibitedItem prohibitedItem, BaggageScanner baggageScanner) {
+		HandBaggage handBaggage = new HandBaggage(null);
+		String content = prohibitedItem.getPattern();
+		int layerIdx = RandomUtils.nextInt(5);
 
-        handBaggage.getLayers()[layerIdx].setContent(content);
+		handBaggage.getLayers()[layerIdx].setContent(content);
 
-        Inspector inspector = baggageScanner.getOperatingStation().getInspector();
-        ScanResult feedback;
+		Inspector inspector = baggageScanner.getOperatingStation().getInspector();
+		ScanResult feedback;
 
 		try {
 			feedback = baggageScanner.scan(inspector, handBaggage);
@@ -24,6 +24,6 @@ public class TestUtility {
 			return false;
 		}
 
-        return !(feedback instanceof Clean);
-    }
+		return !(feedback instanceof Clean);
+	}
 }

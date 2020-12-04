@@ -10,7 +10,6 @@ import de.dhbw.baggage.HandBaggage;
 import de.dhbw.baggage.Knife;
 import de.dhbw.baggage.Layer;
 import de.dhbw.card.IDCard;
-import de.dhbw.card.ProfileType;
 import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
 import de.dhbw.employee.Technician;
@@ -20,15 +19,8 @@ import de.dhbw.station.BaggageScanner;
 import de.dhbw.station.Belt;
 import de.dhbw.station.CardReader;
 import de.dhbw.station.Status;
+import de.dhbw.station.Tray;
 import de.dhbw.station.UnauthorizedException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestApplication {
@@ -221,6 +215,7 @@ public class TestApplication {
 		// the rest of their luggage scanned -> 
 		// allBaggages - previousIllegalBaggages = 609 - 3
 		assertEquals(606, application.getBaggageScanner().getScanLog().size());
+
 		/*
 		 * return null; // TestFactory List<HandBaggage> baggages = new ArrayList<>();
 		 * baggages.add(new HandBaggage()); // without forbidden item baggages.add(new
@@ -239,8 +234,14 @@ public class TestApplication {
 	@DisplayName("Ordnungsgemäßer Ablauf, wenn keine verbotenen Gegenstände gefunden wurden.")
 	public void standardNonIllegal() {
 		// Code für Ablauf
+		Passenger passenger = Passenger.fromString("Gutrun Gutrunsdottir;1;-");
+		HandBaggage handBaggage = passenger.getHandBaggage().get(0);
+
+		application.pushHandBaggageThrough(handBaggage);
+
 		// Auf Track02 geleitet
-		assertNotNull(application.getBaggageScanner().getTrack2().getItem(handBaggage));
+		Tray tray = application.getBaggageScanner().getTrack2().takeNext();
+		assertEquals(handBaggage, tray.getHandBaggage());
 	}
 
 	@Test
@@ -248,16 +249,20 @@ public class TestApplication {
 	@DisplayName("Ordnungsgemäßer Ablauf, wenn der verbotene Gegenstand Messer gefunden wurde.")
 	public void standardKnife() {
 		// Code für Ablauf
+		Passenger passenger = Passenger.fromString("Effi Effidada;2;[K,1,2]");
+		HandBaggage handBaggage = passenger.getHandBaggage().get(0);
+
+		application.pushHandBaggageThrough(handBaggage);
+		
+		for(Layer layer : handBaggage.getLayers()) {
+			assertFalse(layer.getContent().contains(new Knife().getPattern()));
+		}
+		
 		// Durch Inspektor auf Bahn 01 leiten
 		assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
-		Belt belt = application.getBaggageScanner().getBelt();
 		// Messer entnommen
 		Layer[] layers = handBaggage.getLayers();
 		assertFalse(Arrays.stream(layers).anyMatch(layer -> layer.getContent().contains("kn!fe")));
-		// Schale mit Handgepäckstück am Ende des Förderbands abgelegt
-		assertEquals(handBaggage, belt.getBack());
-		// Button Pfeil nach links und Gepäck fährt wieder an Anfang
-		assertEquals(handBaggage, belt.getFront());
 	}
 
 	@Test
@@ -265,17 +270,27 @@ public class TestApplication {
 	@DisplayName("Ordnungsgemäßer Ablauf, wenn der verbotene Gegenstand Waffe gefunden wurde.")
 	public void standardWeapon() {
 		// Code für Ablauf
+		Passenger passenger = Passenger.fromString("Gutrun Gutrunsdottir;1;[W,1,1]");
+		HandBaggage handBaggage = passenger.getHandBaggage().get(0);
+		
+		application.pushHandBaggageThrough(handBaggage);
+		
+		Tray tray = application.getBaggageScanner().getTrack1().takeNext();
+
 		// Durch Inspektor auf Bahn 01 leiten
-		assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
+		assertEquals(handBaggage, tray.getHandBaggage());
 		// Alarm ausgelöst
-		assertTrue(baggageScanner.isAlarmActive());
+		assertTrue(application.getBaggageScanner().isAlarmActive());
 		// BaggageScanner Zustand locked
-		assertTrue(baggageScanner.isLocked());
+		assertTrue(application.getBaggageScanner().isLocked());
 		// Festnahme
 		assertTrue(handBaggage.getPassenger().isArrested());
 		// Supervisor entnimmt Waffe und übergibt Bundespolizist
 		Layer[] layers = handBaggage.getLayers();
-		assertFalse(Arrays.stream(layers).anyMatch(layer -> layer.getContent().contains("glock|7")));
+		assertFalse(Arrays.stream(layers).anyMatch(layer -> layer.getContent().contains(new Gun().getPattern())));
+		
+		application.postprocessPassenger();
+		
 		// Betrieb fortsetzen (Alarm aus & Zustand unlocked)
 		assertFalse(baggageScanner.isAlarmActive());
 		assertEquals(Status.ACTIVE, baggageScanner.getStatus());
@@ -286,20 +301,30 @@ public class TestApplication {
 	@DisplayName("Ordnungsgemäßer Ablauf, wenn der verbotene Gegenstand Sprengstoff gefunden wurde.")
 	public void standardExplosive() {
 		// Code für Ablauf
+		Passenger passenger = Passenger.fromString("Gutrun Gutrunsdottir;1;[E,1,1]");
+		HandBaggage handBaggage = passenger.getHandBaggage().get(0);
+		
+		application.pushHandBaggageThrough(handBaggage);
+		
+		Tray tray = application.getBaggageScanner().getTrack1().takeNext();
+
 		// Durch Inspektor auf Bahn 01 leiten
-		assertNotNull(application.getBaggageScanner().getTrack1().getItem(handBaggage));
+		assertEquals(handBaggage, tray.getHandBaggage());
 		// Alarm ausgelöst
 		assertTrue(baggageScanner.isAlarmActive());
 		// BaggageScanner Zustand locked
 		assertTrue(baggageScanner.isLocked());
 		// Inspektor swiped mit Teststreifen über Gepäck und liest in
 		// ExplosivesTraceDetector einlesen
-		char[][] sample = null;
+		char[][] sample = application.getBaggageScanner().getManualPostControl().getInspector().swipe(handBaggage);
 		assertTrue(application.getBaggageScanner().getExplosiveTraceDetector().test(sample));
 		// Zerstörung in 1000 Teile mit Länge 50
 		String[] destroyedParts = new Roboter().destroy(handBaggage);
 		assertEquals(1000, destroyedParts.length);
 		assertTrue(Arrays.stream(destroyedParts).allMatch(part -> part.length() == 50));
+		
+		application.postprocessPassenger();
+
 		// Betrieb fortsetzen (Alarm aus & Zustand unlocked)
 		assertFalse(baggageScanner.isAlarmActive());
 		assertFalse(baggageScanner.isLocked());

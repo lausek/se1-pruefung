@@ -26,6 +26,7 @@ public class OperatingStation {
 
 	public void processNext() throws UnauthorizedException {
 		this.baggageScanner.moveBeltForward(this.inspector);
+
 		Tray currentTray = this.baggageScanner.getBelt().takeNext();
 		HandBaggage handBaggage = currentTray.getHandBaggage();
 
@@ -57,7 +58,7 @@ public class OperatingStation {
 
 					char[][] sample = this.inspector.swipe(handBaggage);
 					assert (this.baggageScanner.getExplosiveTraceDetector().test(sample));
-					
+
 					roboter.destroy(handBaggage);
 
 					roboter.setFederalPoliceOfficer(null);
@@ -65,12 +66,16 @@ public class OperatingStation {
 					ProhibitedItem prohibitedItem = handBaggage.removeProhibitedItem();
 					officerO3.takeProhibitedItem(prohibitedItem);
 				}
-
-				this.baggageScanner.unlock(this.baggageScanner.getSupervision().getSupervisor());
 			} else {
 				// knife was found
 				this.baggageScanner.getManualPostControl().getInspector()
 						.duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden();
+
+				// unset content of all layers
+				handBaggage.removeProhibitedItem();
+
+				this.baggageScanner.moveBeltBackwards(this.inspector);
+				this.baggageScanner.moveBeltForward(this.inspector);
 			}
 
 			this.baggageScanner.getTrack1().push(currentTray);

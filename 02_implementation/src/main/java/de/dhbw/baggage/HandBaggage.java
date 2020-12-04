@@ -12,7 +12,7 @@ public class HandBaggage {
 	public HandBaggage(Passenger passenger) {
 		this.passenger = passenger;
 		this.layers = new Layer[5];
-		for(int i = 0; i < this.layers.length; i++) {
+		for (int i = 0; i < this.layers.length; i++) {
 			this.layers[i] = new Layer();
 		}
 	}
@@ -26,6 +26,9 @@ public class HandBaggage {
 	}
 
 	public ProhibitedItem removeProhibitedItem() {
+		for (Layer layer : this.getLayers()) {
+			layer.setContent("                           ");
+		}
 		return null;
 	}
 }
