@@ -1,7 +1,4 @@
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import de.dhbw.Application;
 import de.dhbw.Passenger;
 import de.dhbw.baggage.Explosive;
@@ -16,7 +13,6 @@ import de.dhbw.employee.Technician;
 import de.dhbw.police.FederalPoliceOfficer;
 import de.dhbw.police.Roboter;
 import de.dhbw.station.BaggageScanner;
-import de.dhbw.station.Belt;
 import de.dhbw.station.CardReader;
 import de.dhbw.station.Status;
 import de.dhbw.station.Tray;

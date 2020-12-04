@@ -1,6 +1,5 @@
 package de.dhbw;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.dhbw.baggage.HandBaggage;
-import de.dhbw.card.IDCard;
 import de.dhbw.employee.HouseKeeper;
 import de.dhbw.employee.Inspector;
 import de.dhbw.employee.Supervisor;
 import de.dhbw.employee.Technician;
 import de.dhbw.police.FederalPoliceOffice;
-import de.dhbw.police.FederalPoliceOfficer;
 import de.dhbw.station.BaggageScanner;
 import de.dhbw.station.Tray;
 import de.dhbw.station.UnauthorizedException;

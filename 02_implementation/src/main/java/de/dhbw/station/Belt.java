@@ -6,11 +6,9 @@ import de.dhbw.baggage.HandBaggage;
 
 public class Belt {
 
-	private BaggageScanner baggageScanner;
 	private LinkedList<Tray> queue;
 
-	public Belt(BaggageScanner baggageScanner) {
-		this.baggageScanner = baggageScanner;
+	public Belt() {
 		this.queue = new LinkedList<>();
 	}
 	

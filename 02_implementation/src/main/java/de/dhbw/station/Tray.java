@@ -5,11 +5,8 @@ import de.dhbw.baggage.HandBaggage;
 public class Tray {
 
 	private HandBaggage handBaggage;
-	private BaggageScanner baggageScanner;
 
-	public Tray(BaggageScanner baggageScanner) {
-		this.baggageScanner = baggageScanner;
-	}
+	public Tray() { }
 
 	public HandBaggage getHandBaggage() {
 		return handBaggage;

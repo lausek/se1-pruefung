@@ -5,7 +5,8 @@ public class Layer {
 	private HandBaggage handBaggage;
 	private char[] content;
 
-	public Layer() {
+	public Layer(HandBaggage handBaggage) {
+		this.handBaggage = handBaggage;
 		this.content = new char[10000];
 	}
 
@@ -18,5 +19,9 @@ public class Layer {
 		for (int i = 0; i < cs.length; i++) {
 			this.content[i] = cs[i];
 		}
+	}
+
+	public HandBaggage getHandBaggage() {
+		return handBaggage;
 	}
 }

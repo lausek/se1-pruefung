@@ -8,7 +8,6 @@ import de.dhbw.Configuration;
 import de.dhbw.baggage.HandBaggage;
 import de.dhbw.baggage.Layer;
 import de.dhbw.baggage.ProhibitedItem;
-import de.dhbw.card.IDCard;
 import de.dhbw.employee.Employee;
 import de.dhbw.employee.HouseKeeper;
 import de.dhbw.employee.Inspector;
@@ -45,11 +44,11 @@ public class BaggageScanner {
 	public BaggageScanner() {
 		this.trays = new Stack<>();
 		for (int i = 0; i < DEFAULT_TRAY_AMOUNT; i++) {
-			this.addTray(new Tray(this));
+			this.addTray(new Tray());
 		}
 
 		this.rollerConveyor = new RollerConveyor(this);
-		this.belt = new Belt(this);
+		this.belt = new Belt();
 		this.explosiveTraceDetector = new ExplosiveTraceDetector();
 		this.scanner = new Scanner(this);
 		this.operatingStation = new OperatingStation(this);
@@ -59,7 +58,7 @@ public class BaggageScanner {
 		this.alarmActive = false;
 		this.status = Status.SHUTDOWN;
 		this.scanLog = new ArrayList<>(1500);
-		this.postBelts = new Belt[] { new Belt(this), new Belt(this) };
+		this.postBelts = new Belt[] { new Belt(), new Belt() };
 	}
 
 	private void authenticationCheck(Employee employee, Class<?>... classes) throws UnauthorizedException {
@@ -93,6 +92,7 @@ public class BaggageScanner {
 		this.status = Status.IN_USE;
 
 		ScanResult scanResult = new Clean();
+		@SuppressWarnings("unused")
 		IStringMatching searcher = Configuration.SEARCH_ALGORITHM == "BoyerMoore" ? new BoyerMoore()
 				: new KnuthMorrisPratt();
 
@@ -197,8 +197,16 @@ public class BaggageScanner {
 		return explosiveTraceDetector;
 	}
 
+	public Technician getTechnician() {
+		return this.technician;
+	}
+
 	public void setTechnician(Technician technician) {
 		this.technician = technician;
+	}
+
+	public HouseKeeper getHouseKeeper() {
+		return this.houseKeeper;
 	}
 
 	public void setHouseKeeper(HouseKeeper houseKeeper) {
@@ -207,5 +215,9 @@ public class BaggageScanner {
 	
 	public List<Record> getScanLog() {
 		return this.scanLog;
+	}
+
+	public Scanner getScanner() {
+		return scanner;
 	}
 }

@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import de.dhbw.employee.Employee;
 
 public class IDCard {
-
+	
+	private static int idCounter = 1;
+	
 	private MagnetStripe magnetStripe;
 	private Employee employee;
 	private CardType cardType;
@@ -17,6 +19,7 @@ public class IDCard {
 		this.magnetStripe = new MagnetStripe(this, profileType, pin);
 		this.cardType = cardType;
 		this.validUntil = LocalDateTime.now().plusDays(30);
+		this.id = idCounter++;
 	}
 
 	public boolean isLocked() {
@@ -41,6 +44,10 @@ public class IDCard {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	public int getId() {
+		return id;
 	}
 	
 	public static IDCard createOfficerCard(String pin) {

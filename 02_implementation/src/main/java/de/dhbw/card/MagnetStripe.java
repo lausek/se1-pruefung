@@ -27,4 +27,8 @@ public class MagnetStripe {
 	public ProfileType getProfileType() {
 		return this.profileType;
 	}
+
+	public IDCard getIdCard() {
+		return idCard;
+	}
 }

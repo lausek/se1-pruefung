@@ -44,4 +44,8 @@ public class CardReader {
 	public boolean inputPin(IDCard card, String pin) {
 		return card.getMagnetStripe().getPin().equals(pin);
 	}
+
+	public OperatingStation getOperatingStation() {
+		return operatingStation;
+	}
 }

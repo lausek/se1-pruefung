@@ -7,4 +7,8 @@ public class Scanner {
 	public Scanner(BaggageScanner baggageScanner) {
 		this.baggageScanner = baggageScanner;
 	}
+
+	public BaggageScanner getBaggageScanner() {
+		return baggageScanner;
+	}
 }

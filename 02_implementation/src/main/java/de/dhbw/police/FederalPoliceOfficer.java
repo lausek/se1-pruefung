@@ -43,4 +43,12 @@ public class FederalPoliceOfficer extends Employee {
 	public void takeProhibitedItem(ProhibitedItem prohibitedItem) {
 		this.bigStashes.add(prohibitedItem);
 	}
+
+	public BaggageScanner getBaggageScanner() {
+		return baggageScanner;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
 }

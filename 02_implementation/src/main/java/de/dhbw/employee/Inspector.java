@@ -32,4 +32,20 @@ public class Inspector extends Employee {
 	}
 
 	public void duPeddaPassUffDieTypeIsNichSauberIkHabDaNMesserJefunden() { }
+
+	public boolean isSenior() {
+		return isSenior;
+	}
+
+	public RollerConveyor getRollerConveyor() {
+		return rollerConveyor;
+	}
+
+	public ManualPostControl getManualPostControl() {
+		return manualPostControl;
+	}
+
+	public OperatingStation getOperatingStation() {
+		return operatingStation;
+	}
 }

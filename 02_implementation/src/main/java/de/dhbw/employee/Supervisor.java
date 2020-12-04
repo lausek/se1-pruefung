@@ -16,4 +16,16 @@ public class Supervisor extends Employee {
 	public Supervisor(String name, IDCard idCard) {
 		super(name, idCard);
 	}
+
+	public boolean isExecutive() {
+		return isExecutive;
+	}
+
+	public boolean isSenior() {
+		return isSenior;
+	}
+
+	public Supervision getSupervision() {
+		return supervision;
+	}
 }

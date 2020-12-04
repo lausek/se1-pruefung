@@ -18,4 +18,8 @@ public class ManualPostControl {
 	public void setInspector(Inspector inspector) {
 		this.inspector = inspector;
 	}
+
+	public BaggageScanner getBaggageScanner() {
+		return baggageScanner;
+	}
 }

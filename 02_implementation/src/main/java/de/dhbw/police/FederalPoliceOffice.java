@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.dhbw.RandomUtils;
-import de.dhbw.card.CardType;
-import de.dhbw.card.IDCard;
-import de.dhbw.card.ProfileType;
 
 public class FederalPoliceOffice {
 	

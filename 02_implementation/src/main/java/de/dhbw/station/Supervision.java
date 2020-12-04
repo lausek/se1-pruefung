@@ -18,4 +18,8 @@ public class Supervision {
 	public void setSupervisor(Supervisor supervisor) {
 		this.supervisor = supervisor;
 	}
+
+	public BaggageScanner getBaggageScanner() {
+		return baggageScanner;
+	}
 }
